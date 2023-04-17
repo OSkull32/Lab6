@@ -1,4 +1,3 @@
 rootProject.name = 'Lab6'
 include 'common', 'client', 'server'
-include 'a'
 
