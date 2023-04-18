@@ -1,13 +1,12 @@
-package client.utility;
+package common.utility;
 
-import client.App;
 import common.data.*;
 import common.exceptions.ErrorInScriptException;
 import common.exceptions.InvalidValueException;
-import common.utility.*;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 /**
  * Класс, необходимы для чтения полей объекта Flat
@@ -17,7 +16,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     private boolean fileMode;
 
     // Поле, хранящее ссылку на объект класса типа Console
-    private final UserConsole console;
+    private Scanner userScanner;
 
     /**
      * Константа, хранящее шаблон (регулярное выражение), которому должны
@@ -28,10 +27,10 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     /**
      * Конструктор класса, который присваивает console значение, переданное в конструкторе в качестве параметра
      *
-     * @param console хранит ссылку на объект типа Console
+     * @param userScanner хранит ссылку на объект типа Scanner
      */
-    public FlatReader(UserConsole console) {
-        this.console = console;
+    public FlatReader(Scanner userScanner) {
+        this.userScanner = userScanner;
     }
 
     public boolean askQuestion(String question) throws ErrorInScriptException {
@@ -40,20 +39,20 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
 
         while (true) {
             try {
-                console.printCommandTextNext(finalQuestion);
-                console.printCommandText(App.PS2);
-                answer = console.readLine().trim();
-                if (fileMode) console.printCommandTextNext(answer);
+                UserConsole.printCommandTextNext(finalQuestion);
+                UserConsole.printCommandText("> ");
+                answer = userScanner.nextLine().trim();
+                if (fileMode) UserConsole.printCommandTextNext(answer);
                 if (!answer.equals("yes") && !answer.equals("no")) throw new InvalidValueException();
                 break;
                 } catch (NoSuchElementException ex) {
-                console.printCommandError("Ответ не распознан");
+                UserConsole.printCommandError("Ответ не распознан");
                 if (fileMode) throw new ErrorInScriptException();
             } catch (InvalidValueException ex) {
-                console.printCommandError("Ответом может быть только 'yes' или 'no'");
+                UserConsole.printCommandError("Ответом может быть только 'yes' или 'no'");
                 if (fileMode) throw new ErrorInScriptException();
             } catch (IllegalStateException ex) {
-                console.printCommandError("Непредвиденная ошибка!");
+                UserConsole.printCommandError("Непредвиденная ошибка!");
                 System.exit(0);
             }
         }
@@ -69,6 +68,17 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     }
 
     /**
+     * Метод, выполняющий чтение данных из консоли. Ввод полей в определенном порядке
+     *
+     * @return объект типа Flat
+     */
+    @Override
+    public Flat read() {
+        return new Flat(read().getId(), readName(), readCoordinates(), LocalDateTime.now(), readArea(),
+                readNumberOfRooms(), readNumberOfBathrooms(), readFurnish(), readView(), readHouse());
+    }
+
+    /**
      * Метод, который читает поле name объекта Flat из потока, указанного в поле console.
      *
      * @return значение поля name, уже проверенное на условия допустимости
@@ -76,11 +86,11 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     @Override
     public String readName() {
         while (true) {
-            console.printCommandText("name (not null): ");
-            String str = console.readLine().trim();
-            if (str.equals("")) console.printCommandError("Значение поля не может быть null или пустой строкой");
+            UserConsole.printCommandText("name (not null): ");
+            String str = UserConsole.readLine().trim();
+            if (str.equals("")) UserConsole.printCommandError("Значение поля не может быть null или пустой строкой");
             else if (!str.matches(PATTERN_NAMES))
-                console.printCommandError("Введенная строка содержит запрещенные символы");
+                UserConsole.printCommandError("Введенная строка содержит запрещенные символы");
             else return str;
         }
     }
@@ -105,14 +115,14 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         int x;
         while (true) {
             try {
-                console.printCommandText("coordinate x(int & x <= 713): ");
-                x = Integer.parseInt(console.readLine().trim());
+                UserConsole.printCommandText("coordinate x(int & x <= 713): ");
+                x = Integer.parseInt(UserConsole.readLine().trim());
                 if (x > 713) throw new InvalidValueException();
                 else return x;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Координата x должна быть не более 713");
+                UserConsole.printCommandTextNext("Координата x должна быть не более 713");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа int");
+                UserConsole.printCommandError("Число должно быть типа int");
             }
         }
     }
@@ -127,14 +137,14 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         Integer y;
         while (true) {
             try {
-                console.printCommandText("coordinate y(integer & not null & y > -397): ");
-                y = Integer.parseInt(console.readLine().trim());
+                UserConsole.printCommandText("coordinate y(integer & not null & y > -397): ");
+                y = Integer.parseInt(UserConsole.readLine().trim());
                 if (y <= -397) throw new InvalidValueException();
                 else return y;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Координата y должна быть больше -397");
+                UserConsole.printCommandTextNext("Координата y должна быть больше -397");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа Integer и не null");
+                UserConsole.printCommandError("Число должно быть типа Integer и не null");
             }
         }
     }
@@ -149,14 +159,14 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         int area;
         while (true) {
             try {
-                console.printCommandText("area(int & area > 0): ");
-                area = Integer.parseInt(console.readLine().trim());
+                UserConsole.printCommandText("area(int & area > 0): ");
+                area = Integer.parseInt(UserConsole.readLine().trim());
                 if (area <= 0) throw new InvalidValueException();
                 else return area;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Значение area должно быть больше 0");
+                UserConsole.printCommandTextNext("Значение area должно быть больше 0");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа int");
+                UserConsole.printCommandError("Число должно быть типа int");
             }
         }
     }
@@ -171,14 +181,14 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         long numberOfRooms;
         while (true) {
             try {
-                console.printCommandText("numberOfRooms(long & 0 < numberOfRooms <=14): ");
-                numberOfRooms = Long.parseLong(console.readLine().trim());
+                UserConsole.printCommandText("numberOfRooms(long & 0 < numberOfRooms <=14): ");
+                numberOfRooms = Long.parseLong(UserConsole.readLine().trim());
                 if (numberOfRooms <= 0 || numberOfRooms > 14) throw new InvalidValueException();
                 else return numberOfRooms;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Значение numberOfRooms должно быть больше 0 и не более 14");
+                UserConsole.printCommandTextNext("Значение numberOfRooms должно быть больше 0 и не более 14");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа long");
+                UserConsole.printCommandError("Число должно быть типа long");
             }
         }
     }
@@ -193,14 +203,14 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         long numberOfBathrooms;
         while (true) {
             try {
-                console.printCommandText("numberOfBathrooms(long & numberOfBathrooms > 0): ");
-                numberOfBathrooms = Long.parseLong(console.readLine().trim());
+                UserConsole.printCommandText("numberOfBathrooms(long & numberOfBathrooms > 0): ");
+                numberOfBathrooms = Long.parseLong(UserConsole.readLine().trim());
                 if (numberOfBathrooms <= 0) throw new InvalidValueException();
                 else return numberOfBathrooms;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Значение numberOfBathrooms должно быть больше 0");
+                UserConsole.printCommandTextNext("Значение numberOfBathrooms должно быть больше 0");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа long");
+                UserConsole.printCommandError("Число должно быть типа long");
             }
         }
     }
@@ -216,15 +226,15 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         Furnish furnish;
         while (true) {
             try {
-                console.printCommandText("Допустимые значения furnish:\n");
+                UserConsole.printCommandText("Допустимые значения furnish:\n");
                 for (Furnish val : Furnish.values()) {
-                    console.printCommandText(val.name() + "\n");
+                    UserConsole.printCommandText(val.name() + "\n");
                 }
-                console.printCommandText("furnish: ");
-                furnish = Furnish.valueOf(console.readLine().toUpperCase().trim());
+                UserConsole.printCommandText("furnish: ");
+                furnish = Furnish.valueOf(UserConsole.readLine().toUpperCase().trim());
                 return furnish;
             } catch (IllegalArgumentException ex) {
-                console.printCommandError("Введенная константа не представлена в допустимых значения Furnish");
+                UserConsole.printCommandError("Введенная константа не представлена в допустимых значения Furnish");
             }
         }
     }
@@ -240,12 +250,12 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         View view;
         while (true) {
             try {
-                console.printCommandText("Допустимые значения view:\n");
+                UserConsole.printCommandText("Допустимые значения view:\n");
                 for (View val : View.values()) {
-                    console.printCommandText(val.name() + "\n");
+                    UserConsole.printCommandText(val.name() + "\n");
                 }
-                console.printCommandText("view: ");
-                String str = console.readLine().trim();
+                UserConsole.printCommandText("view: ");
+                String str = UserConsole.readLine().trim();
                 if (str.equals("")) {
                     view = null;
                 } else {
@@ -253,7 +263,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
                 }
                 return view;
             } catch (IllegalArgumentException ex) {
-                console.printCommandError("Введенная константа не представлена в допустимых значения View");
+                UserConsole.printCommandError("Введенная константа не представлена в допустимых значения View");
             }
         }
     }
@@ -266,13 +276,13 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     @Override
     public House readHouse() {
         while (true) {
-            console.printCommandText("Нажмите enter, чтобы ввести в поле house null или введите House name (not null):");
-            String str = console.readLine().trim();
+            UserConsole.printCommandText("Нажмите enter, чтобы ввести в поле house null или введите House name (not null):");
+            String str = UserConsole.readLine().trim();
             if (str.equals(""))
                 return null;
             else {
                 if (!str.matches(PATTERN_NAMES))
-                    console.printCommandError("Введенная строка содержит запрещенные символы");
+                    UserConsole.printCommandError("Введенная строка содержит запрещенные символы");
                 else return new House(str, readHouseYear(), readHouseNumberOfFloors(),
                         readHouseNumberOfFlatsOnFloor(), readHouseNumberOfLifts());
             }
@@ -289,11 +299,11 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         String str;
 
         while (true) {
-            console.printCommandText("House name (not null): ");
-            str = console.readLine().trim();
-            if (str.equals("")) console.printCommandError("Значение поля не может быть null");
+            UserConsole.printCommandText("House name (not null): ");
+            str = UserConsole.readLine().trim();
+            if (str.equals("")) UserConsole.printCommandError("Значение поля не может быть null");
             else if (!str.matches(PATTERN_NAMES))
-                console.printCommandError("Введенная строка содержит запрещенные символы");
+                UserConsole.printCommandError("Введенная строка содержит запрещенные символы");
             else return str;
         }
     }
@@ -308,14 +318,14 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         int houseYear;
         while (true) {
             try {
-                console.printCommandText("houseYear(int & houseYear > 0): ");
-                houseYear = Integer.parseInt(console.readLine().trim());
+                UserConsole.printCommandText("houseYear(int & houseYear > 0): ");
+                houseYear = Integer.parseInt(UserConsole.readLine().trim());
                 if (houseYear <= 0) throw new InvalidValueException();
                 else return houseYear;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Значение houseYear должно быть больше 0");
+                UserConsole.printCommandTextNext("Значение houseYear должно быть больше 0");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа int");
+                UserConsole.printCommandError("Число должно быть типа int");
             }
         }
     }
@@ -330,8 +340,8 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         Long numberOfFloors;
         while (true) {
             try {
-                console.printCommandText("number of floors(long & 0 < numberOfFloors <= 39): ");
-                String str = console.readLine().trim();
+                UserConsole.printCommandText("number of floors(long & 0 < numberOfFloors <= 39): ");
+                String str = UserConsole.readLine().trim();
                 if (str.equals("")) numberOfFloors = null;
                 else {
                     numberOfFloors = Long.parseLong(str);
@@ -339,9 +349,9 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
                 }
                 return numberOfFloors;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Значение numberOfFloors должно быть больше 0 и не более 39");
+                UserConsole.printCommandTextNext("Значение numberOfFloors должно быть больше 0 и не более 39");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа Long");
+                UserConsole.printCommandError("Число должно быть типа Long");
             }
         }
     }
@@ -356,14 +366,14 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         long numberOfFlatsOnFloor;
         while (true) {
             try {
-                console.printCommandText("number of flats on floor(long & numberOfFlatsOnFloor > 0): ");
-                numberOfFlatsOnFloor = Long.parseLong(console.readLine().trim());
+                UserConsole.printCommandText("number of flats on floor(long & numberOfFlatsOnFloor > 0): ");
+                numberOfFlatsOnFloor = Long.parseLong(UserConsole.readLine().trim());
                 if (numberOfFlatsOnFloor <= 0) throw new InvalidValueException();
                 else return numberOfFlatsOnFloor;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Значение numberOfFlatsOnFloor должно быть больше 0");
+                UserConsole.printCommandTextNext("Значение numberOfFlatsOnFloor должно быть больше 0");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа long");
+                UserConsole.printCommandError("Число должно быть типа long");
             }
         }
     }
@@ -378,8 +388,8 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         Long numberOfLifts;
         while (true) {
             try {
-                console.printCommandText("number of lifts(long & numberOfLifts > 0): ");
-                String str = console.readLine().trim();
+                UserConsole.printCommandText("number of lifts(long & numberOfLifts > 0): ");
+                String str = UserConsole.readLine().trim();
                 if (str.equals("")) numberOfLifts = null;
                 else {
                     numberOfLifts = Long.parseLong(str);
@@ -387,9 +397,9 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
                 }
                 return numberOfLifts;
             } catch (InvalidValueException ex) {
-                console.printCommandTextNext("Значение numberOfLifts должно быть больше 0");
+                UserConsole.printCommandTextNext("Значение numberOfLifts должно быть больше 0");
             } catch (NumberFormatException ex) {
-                console.printCommandError("Число должно быть типа long");
+                UserConsole.printCommandError("Число должно быть типа long");
             }
         }
     }

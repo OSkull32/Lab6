@@ -1,4 +1,4 @@
-package client.utility;
+package common.utility;
 
 public interface HouseReaderInterface {
     String readHouseName();

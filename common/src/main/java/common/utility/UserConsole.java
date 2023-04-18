@@ -5,10 +5,10 @@ import common.exceptions.ErrorInScriptException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-public class UserConsole implements Console {
+public class UserConsole {
 
     // хранит ссылку на текущий Scanner
-    private Scanner scanner;
+    private static Scanner scanner;
 
     // хранит ссылку на дефолтный Scanner
     private final Scanner DEFAULT_SCANNER = new Scanner(System.in, StandardCharsets.UTF_8);
@@ -18,7 +18,7 @@ public class UserConsole implements Console {
     В этом режиме данные, введенные в консоль пользователем не учитываются
     весь поток ввода идет из файлов скрипта
      */
-    private boolean scriptMode = false;
+    private static boolean scriptMode = false;
 
     // цвета
     public static final String ANSI_RESET = "\u001B[0m";
@@ -38,7 +38,7 @@ public class UserConsole implements Console {
      *
      * @param scanner {@link Scanner}, с помощью которого происходит чтение из скрипта.
      */
-    @Override
+
     public void turnOnScriptMode(Scanner scanner) {
         scriptMode = true;
         this.scanner = scanner;
@@ -47,7 +47,7 @@ public class UserConsole implements Console {
     /**
      * Метод отключает режим исполнения скрипта и переводит консоль в обычный режим.
      */
-    @Override
+
     public void turnOffScriptMode() {
         this.scanner = DEFAULT_SCANNER;
         scriptMode = false;
@@ -58,8 +58,8 @@ public class UserConsole implements Console {
      *
      * @return возвращает считанную строку
      */
-    @Override
-    public String readLine() {
+
+    public static String readLine() {
         String line = scanner.nextLine();
         if (scriptMode) {
             System.out.println(ANSI_YELLOW + line + ANSI_RESET);
@@ -67,13 +67,17 @@ public class UserConsole implements Console {
         return line;
     }
 
+    public boolean hashNextLine() {
+        return scanner.hasNextLine();
+    }
+
     /**
      * Метод, выводящий текст в стандартный поток вывода с переносом строки.
      *
      * @param str строка, которая выводиться в стандартный поток вывода
      */
-    @Override
-    public void printCommandTextNext(String str) {
+
+    public static void printCommandTextNext(String str) {
         System.out.println(str);
     }
 
@@ -82,8 +86,8 @@ public class UserConsole implements Console {
      *
      * @param str строка, которая выводиться в стандартный поток вывода
      */
-    @Override
-    public void printCommandText(String str) {
+
+    public static void printCommandText(String str) {
         System.out.print(str);
     }
 
@@ -92,8 +96,8 @@ public class UserConsole implements Console {
      *
      * @param str строка, которая выводиться в стандартный поток вывода ошибок
      */
-    @Override
-    public void printCommandError(String str) {
+
+    public static void printCommandError(String str) {
         System.out.println(ANSI_RED + "Ошибка: " + str + ANSI_RESET);
         if (scriptMode) {
             throw new ErrorInScriptException();
@@ -103,7 +107,7 @@ public class UserConsole implements Console {
     /**
      * Метод, выводящий символ стрелки перед запросом ввода команды
      */
-    @Override
+
     public void printPreamble() {
         System.out.print("\uD83C\uDF7A>");
     }

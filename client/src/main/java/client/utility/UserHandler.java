@@ -1,16 +1,23 @@
 package client.utility;
 
+import client.App;
 import common.data.Coordinates;
 import common.data.Furnish;
 import common.data.House;
 import common.data.View;
+import common.exceptions.CommandUsageException;
 import common.exceptions.ErrorInScriptException;
+import common.exceptions.RecursiveException;
 import common.interaction.FlatValue;
 import common.interaction.requests.Request;
 import common.interaction.responses.ResponseCode;
+import common.utility.FlatReader;
 import common.utility.UserConsole;
 
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -20,12 +27,180 @@ import java.util.Stack;
 public class UserHandler {
     private final int maxRewriteAttempts = 1;
 
-    private UserConsole userScanner;
+    private Scanner userScanner;
     private Stack<File> scriptStack = new Stack<>();
     private Stack<Scanner> scannerStack = new Stack<>();
 
-    public UserHandler(UserConsole userConsole) {
+    public UserHandler(Scanner userConsole) {
         this.userScanner = userConsole;
+    }
+
+    /**
+     * Получает пользовательский ввод
+     *
+     * @param serverResponseCode последний ответ сервера
+     * @return Новый запрос к серверу
+     */
+    public Request handle(ResponseCode serverResponseCode) {
+        String userInput;
+        String[] userCommand;
+        ProcessingCode processingCode;
+        int rewriteAttempts = 0;
+        try {
+            do {
+                try {
+                    if (fileMode() && (serverResponseCode == ResponseCode.ERROR ||
+                            serverResponseCode == ResponseCode.SERVER_EXIT))
+                        throw new ErrorInScriptException();
+                    while (fileMode() && !userScanner.hasNextLine()) {
+                        userScanner.close();
+                        userScanner = scannerStack.pop();
+                        UserConsole.printCommandTextNext("Возврат к скрипту '" + scriptStack.pop().getName() + "'...");
+                    }
+                    if (fileMode()) {
+                        userInput = userScanner.nextLine();
+                        if (!userInput.isEmpty()) {
+                            UserConsole.printCommandText(App.PS1);
+                            UserConsole.printCommandTextNext(userInput);
+                        }
+                    } else {
+                        UserConsole.printCommandTextNext(App.PS1);
+                        userInput = userScanner.nextLine();
+                    }
+                    userCommand = (userInput.trim() + " ").split(" ",2);
+                    userCommand[1] = userCommand[1].trim();
+                } catch (NoSuchElementException | IllegalStateException ex) {
+                    UserConsole.printCommandTextNext("");
+                    UserConsole.printCommandError("Произошла ошибка при вводе команды.");
+                    userCommand = new String[]{"", ""};
+                    rewriteAttempts++;
+                    if (rewriteAttempts >= maxRewriteAttempts) {
+                        UserConsole.printCommandError("Превышено количество попыток ввода.");
+                        System.exit(0);
+                    }
+                }
+                processingCode = processCommand(userCommand[0], userCommand[1]);
+            } while (processingCode == ProcessingCode.ERROR && !fileMode() || userCommand[0].isEmpty());
+            try {
+                if (fileMode() && (serverResponseCode == ResponseCode.ERROR || processingCode == ProcessingCode.ERROR))
+                    throw new ErrorInScriptException();
+                switch (processingCode) {
+                    case OBJECT -> {
+                        FlatValue flatAddValue = generateFlatAdd();
+                        return new Request(userCommand[0], userCommand[1], flatAddValue);
+                    }
+                    case UPDATE_OBJECT -> {
+                        FlatValue flatUpdateValue = generateFlatUpdate();
+                        return new Request(userCommand[0], userCommand[1], flatUpdateValue);
+                    }
+                    case SCRIPT -> {
+                        File scriptFile = new File(userCommand[1]);
+                        if (!scriptFile.exists()) throw new FileNotFoundException();
+                        if (!scriptStack.isEmpty() && scriptStack.search(scriptFile) != -1)
+                            throw new RecursiveException();
+                        scannerStack.push(userScanner);
+                        scriptStack.push(scriptFile);
+                        userScanner = new Scanner(scriptFile);
+                        UserConsole.printCommandTextNext("Выполняю скрипт '" + scriptFile.getName() + "'...");
+                    }
+                }
+            } catch (FileNotFoundException ex) {
+                UserConsole.printCommandError("Файл со скриптом не найден");
+            } catch (RecursiveException ex) {
+                UserConsole.printCommandError("Скрипт вызывается рекурсивно");
+                throw new ErrorInScriptException();
+            }
+        } catch (ErrorInScriptException ex) {
+            UserConsole.printCommandError("Выполнение скрипта прервано");
+            while (!scannerStack.isEmpty()) {
+                userScanner.close();
+                userScanner = scannerStack.pop();
+            }
+            scriptStack.clear();
+            return new Request();
+        }
+        return new Request(userCommand[0], userCommand[1]);
+    }
+
+    /**
+     * Обрабатывает введенную команду.
+     *
+     * @return Статус кода.
+     */
+    private ProcessingCode processCommand(String command, String commandArgument) {
+        try {
+            switch (command) {
+                case "" -> {
+                    return ProcessingCode.ERROR;
+                }
+                case "help" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "info" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "show" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "insert" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException("<Key> {element}");
+                    return ProcessingCode.OBJECT;
+                }
+                case "update" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException("<Key> {element}");
+                    return ProcessingCode.UPDATE_OBJECT;
+                }
+                case "remove_key" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException("<Key>");
+                }
+                case "clear" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "save" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "execute_script" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException("<file_name>");
+                    return ProcessingCode.SCRIPT;
+                }
+                case "exit" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "history" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "remove_greater_key" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException("<Key>");
+                    return ProcessingCode.OBJECT;
+                }
+                case "remove_lower_key" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException("<Key>");
+                    return ProcessingCode.OBJECT;
+                }
+                case "remove_all_by_view" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException("<View>");
+                    return ProcessingCode.OBJECT;
+                }
+                case "filter_less_then_house" -> {
+                    if (commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                case "print_field_ascending_house" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException("<House>");
+                }
+                case "server_exit" -> {
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                }
+                default -> {
+                    UserConsole.printCommandTextNext("Команда '" + command + "' не найдена. Наберите 'help' для справки.");
+                    return ProcessingCode.ERROR;
+                }
+            }
+        } catch (CommandUsageException exception) {
+            if (exception.getMessage() != null) command += " " + exception.getMessage();
+            UserConsole.printCommandTextNext("Использование: '" + command + "'");
+            return ProcessingCode.ERROR;
+        }
+        return ProcessingCode.OK;
     }
 
     /**
