@@ -1,8 +1,9 @@
-package client.utility;
+package common.utility;
 
 import common.data.*;
 
 public interface FlatReaderInterface {
+    public Flat read();
     String readName();
     Coordinates readCoordinates();
     int readArea();
