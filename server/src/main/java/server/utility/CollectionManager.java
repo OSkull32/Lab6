@@ -17,14 +17,18 @@ import java.util.Map;
 public class CollectionManager {
 
     // Коллекция, с которой осуществляется работа
-    private final Hashtable<Integer, Flat> hashtable;
+    private Hashtable<Integer, Flat> hashtable;
 
     private static final HashSet<Integer> allId = new HashSet<>();
-    private final Console console;
+    private Console console;
     // Время инициализации коллекции
-    private final LocalDateTime collectionInitialization;
+    private LocalDateTime collectionInitialization;
 
-    private final FlatReader flatReader;
+    private FlatReader flatReader;
+
+    private LocalDateTime lastInitTime;
+    private LocalDateTime lastSaveTime;
+    private FileManager fileManager;
 
     /**
      * Максимальный ID у объектов коллекции
@@ -46,6 +50,12 @@ public class CollectionManager {
         for (Flat flat : this.hashtable.values()){
             allId.add(flat.getId());
         }
+    }
+
+    public CollectionManager(FileManager fileManager) {
+        this.lastInitTime = null;
+        this.lastSaveTime = null;
+        this.fileManager = fileManager;
     }
 
     /**

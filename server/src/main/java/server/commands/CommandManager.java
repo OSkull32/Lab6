@@ -19,7 +19,7 @@ import java.util.Set;
  * @version 2.0
  */
 public class CommandManager {
-    private final Console console;
+    private Console console;
     private final HashMap<String, Command> commands = new HashMap<>();
     private final ArrayList<String> historyList = new ArrayList<>();
     private final CollectionManager collectionManager;
@@ -35,6 +35,13 @@ public class CommandManager {
      */
     public CommandManager(Console console, CollectionManager collectionManager, FlatReader flatReader, FileManager fileManager) {
         this.console = console;
+        this.collectionManager = collectionManager;
+        this.flatReader = flatReader;
+        this.fileManager = fileManager;
+        putAllCommands();
+    }
+
+    public CommandManager(CollectionManager collectionManager, FlatReader flatReader, FileManager fileManager) {
         this.collectionManager = collectionManager;
         this.flatReader = flatReader;
         this.fileManager = fileManager;
