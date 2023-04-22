@@ -31,10 +31,7 @@ public class RemoveAllByView implements Command{
     public void execute(String args) throws WrongArgumentException {
         if (args.isEmpty()) throw new WrongArgumentException();
         try {
-            if (args.equals("null")) {
-                collectionManager.removeAllByView(null);
-            }
-            else collectionManager.removeAllByView(View.valueOf(args));
+            collectionManager.removeAllByView((args.equals("null") ? null : View.valueOf(args)));
         } catch (IllegalArgumentException ex) {
             CONSOLE.printCommandError("Выбранной константы нет в перечислении.");
             CONSOLE.printCommandTextNext("Список всех констант:");

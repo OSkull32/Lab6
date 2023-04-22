@@ -73,7 +73,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
      * @return объект типа Flat
      */
     @Override
-    public Flat read() {
+    public Flat read() { //это сломается
         return new Flat(read().getId(), readName(), readCoordinates(), LocalDateTime.now(), readArea(),
                 readNumberOfRooms(), readNumberOfBathrooms(), readFurnish(), readView(), readHouse());
     }

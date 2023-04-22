@@ -100,6 +100,8 @@ public class CommandManager {
         if (historyList.size() > maxHistorySize) {
             historyList.remove(0);
         }
+
+        //todo вот сюда вставить метод push из серверной консоли
     }
 
     /**

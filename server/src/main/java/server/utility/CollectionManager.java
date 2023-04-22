@@ -88,12 +88,17 @@ public class CollectionManager {
      * @return ключ
      */
     public int getKey(int id){
-        for (int key : hashtable.keySet()){
-            if (hashtable.get(key).getId() == id) {
-                return key;
-            }
-        }
-        return -1;
+//        for (int key : hashtable.keySet()){
+//            if (hashtable.get(key).getId() == id) {
+//                return key;
+//            }
+//        }
+//        return -1;
+        return hashtable.entrySet().stream()
+                .filter(entry -> entry.getValue().getId() == id)
+                .findAny()
+                .map(entry -> entry.getKey())
+                .orElse(-1);
     }
     /**
      * Метод, изменяющий поле выбранного элемента коллекции
@@ -104,75 +109,61 @@ public class CollectionManager {
     public void update(int key, String field) throws InvalidValueException {
 
         switch (field) {
-            case "name": {
+            case "name" -> {
                 hashtable.get(key).setName(flatReader.readName());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "coordinate_x": {
+            case "coordinate_x" -> {
                 hashtable.get(key).setCoordinateX(flatReader.readCoordinatesX());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "coordinate_y": {
+            case "coordinate_y" -> {
                 hashtable.get(key).setCoordinateY(flatReader.readCoordinatesY());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "area": {
+            case "area" -> {
                 hashtable.get(key).setArea(flatReader.readArea());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "number_of_rooms": {
+            case "number_of_rooms" -> {
                 hashtable.get(key).setNumberOfRooms(flatReader.readNumberOfRooms());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "number_of_bathrooms": {
+            case "number_of_bathrooms" -> {
                 hashtable.get(key).setNumberOfBathrooms(flatReader.readNumberOfBathrooms());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "furnish": {
+            case "furnish" -> {
                 hashtable.get(key).setFurnish(flatReader.readFurnish());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "view": {
+            case "view" -> {
                 hashtable.get(key).setView(flatReader.readView());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "house_name": {
+            case "house_name" -> {
                 hashtable.get(key).setHouseName(flatReader.readHouseName());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "house_year": {
+            case "house_year" -> {
                 hashtable.get(key).setHouseYear(flatReader.readHouseYear());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "house_number_of_floors": {
+            case "house_number_of_floors" -> {
                 hashtable.get(key).setHouseNumberOfFloors(flatReader.readHouseNumberOfFloors());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "house_number_of_flats_on_floor": {
+            case "house_number_of_flats_on_floor" -> {
                 hashtable.get(key).setHouseNumberOfFlatsOnFloor(flatReader.readHouseNumberOfFlatsOnFloor());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "house_number_of_lifts": {
+            case "house_number_of_lifts" -> {
                 hashtable.get(key).setHouseNumberOfLifts(flatReader.readHouseNumberOfLifts());
                 console.printCommandTextNext("Значение поля было изменено");
-                break;
             }
-            case "stop": {
-                break;
+            case "stop" -> {
             }
-            default: {
+            default -> {
                 throw new InvalidValueException();
             }
         }
@@ -194,13 +185,19 @@ public class CollectionManager {
      * @param key значение ключа, меньше которого следует удалять элементы
      */
     public void removeLowerKey(Integer key) {
-        ArrayList<Integer> keys = new ArrayList<>();
-        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
-            if (entry.getKey() < key) keys.add(entry.getKey());
-        }
-        for (Integer k : keys) {
-            removeKey(k);
-        }
+//        ArrayList<Integer> keys = new ArrayList<>();
+//        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
+//            if (entry.getKey() < key) keys.add(entry.getKey());
+//        }
+//        for (Integer k : keys) {
+//            removeKey(k);
+//        }
+        hashtable.keySet().stream()
+                .filter(k -> k < key)
+                .forEach(k -> {
+                    allId.remove(hashtable.get(k).getId());
+                    hashtable.remove(k);
+                });
     }
 
     /**
@@ -209,13 +206,19 @@ public class CollectionManager {
      * @param key значение ключа, больше которого следует удалять элементы
      */
     public void removeGreaterKey(Integer key) {
-        ArrayList<Integer> keys = new ArrayList<>();
-        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
-            if (entry.getKey() > key) keys.add(entry.getKey());
-        }
-        for (Integer k : keys) {
-            removeKey(k);
-        }
+//        ArrayList<Integer> keys = new ArrayList<>();
+//        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
+//            if (entry.getKey() > key) keys.add(entry.getKey());
+//        }
+//        for (Integer k : keys) {
+//            removeKey(k);
+//        }
+        hashtable.keySet().stream()
+                .filter(k -> k > key)
+                .forEach(k -> {
+                    allId.remove(hashtable.get(k).getId());
+                    hashtable.remove(k);
+                });
     }
 
     /**
@@ -232,17 +235,25 @@ public class CollectionManager {
      * @param view выбранный вид элемента коллекции
      */
     public void removeAllByView(View view) {
-        int size = hashtable.size();
-        ArrayList<Integer> keys = new ArrayList<>();
-        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
-            if (entry.getValue().getView() == null) keys.add(entry.getKey());
-            else if (entry.getValue().getView().equals(view)) keys.add((entry.getKey()));
-        }
-        for (Integer key : keys) {
-            hashtable.remove(key);
-        }
-        if (size == hashtable.size()) console.printCommandTextNext("Не было найдено элементов с таким значением поля");
-        else console.printCommandTextNext("Элементы с данным значением поля удалены");
+//        int size = hashtable.size();
+//        ArrayList<Integer> keys = new ArrayList<>();
+//        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
+//            if (entry.getValue().getView() == null) keys.add(entry.getKey());
+//            else if (entry.getValue().getView().equals(view)) keys.add((entry.getKey()));
+//        }
+//        for (Integer key : keys) {
+//            hashtable.remove(key);
+//        }
+//        if (size == hashtable.size()) console.printCommandTextNext("Не было найдено элементов с таким значением поля");
+//        else console.printCommandTextNext("Элементы с данным значением поля удалены");
+        long countRemoved = hashtable.keySet().stream()
+                .filter(k -> hashtable.get(k).getView().equals(view))
+                .peek(k -> {
+                    allId.remove(hashtable.get(k).getId());
+                    hashtable.remove(k);
+                })
+                .count();
+        console.printCommandTextNext("Было удалено " + countRemoved + " элементов.");
     }
 
     /**

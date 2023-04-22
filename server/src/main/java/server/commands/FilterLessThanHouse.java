@@ -1,12 +1,10 @@
 package server.commands;
 
-import server.utility.CollectionManager;
-import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
 import common.utility.FlatReader;
-
-import java.util.Collection;
+import server.utility.CollectionManager;
+import server.utility.SortByCoordinates;
 
 /**
  * Класс команды "filter_less_than_house".
@@ -48,19 +46,30 @@ public class FilterLessThanHouse implements Command {
             long numberOfFlatsOnFloor = flatReader.readHouseNumberOfFlatsOnFloor();
             Long numberOfLifts = flatReader.readHouseNumberOfLifts();
 
-            Collection<Flat> flatCollection = collectionManager.getCollection().values();
-            int countHouse = 0;
-            for (Flat flat : flatCollection){
-                if (flat.getHouse() == null) continue;
-                if (flat.getHouse().getYear() < year
-                        && flat.getHouse().getNumberOfFloors() < numberOfFloors
-                        && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
-                        && flat.getHouse().getNumberOfLifts() < numberOfLifts){
-                    countHouse++;
-                    console.printCommandTextNext(flat.getName() + "; ");
-                }
-            }
-            if (countHouse == 0) console.printCommandTextNext("Таких домов нет.");
+//            Collection<Flat> flatCollection = collectionManager.getCollection().values();
+//            int countHouse = 0;
+//            for (Flat flat : flatCollection){
+//                if (flat.getHouse() == null) continue;
+//                if (flat.getHouse().getYear() < year
+//                        && flat.getHouse().getNumberOfFloors() < numberOfFloors
+//                        && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
+//                        && flat.getHouse().getNumberOfLifts() < numberOfLifts){
+//                    countHouse++;
+//                    console.printCommandTextNext(flat.getName() + "; ");
+//                }
+//            }
+//            if (countHouse == 0) console.printCommandTextNext("Таких домов нет.");
+
+            collectionManager.getCollection().values().stream()
+                    .filter(flat -> flat.getHouse() != null
+                            && flat.getHouse().getYear() < year
+                            && flat.getHouse().getNumberOfFloors() < numberOfFloors
+                            && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
+                            && flat.getHouse().getNumberOfLifts() < numberOfLifts
+                    )
+                    .sorted(new SortByCoordinates())
+                    .forEach(flat -> console.printCommandTextNext(flat.getName() + "; "));
+
 
         } catch (NumberFormatException e) {
             throw new WrongArgumentException("Аргумент должен быть числом.");
