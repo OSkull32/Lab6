@@ -181,7 +181,7 @@ public class UserHandler {
                     if (commandArgument.isEmpty()) throw new CommandUsageException("<View>");
                     return ProcessingCode.OBJECT;
                 }
-                case "filter_less_then_house" -> {
+                case "filter_less_than_house" -> {
                     if (commandArgument.isEmpty()) throw new CommandUsageException();
                 }
                 case "print_field_ascending_house" -> {
