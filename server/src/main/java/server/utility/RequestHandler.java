@@ -5,6 +5,7 @@ import common.interaction.requests.Request;
 import common.interaction.responses.Response;
 import common.interaction.responses.ResponseCode;
 import common.utility.UserConsole;
+import server.Server;
 import server.commands.CommandManager;
 
 /**
@@ -12,15 +13,17 @@ import server.commands.CommandManager;
  */
 public class RequestHandler {
     private CommandManager commandManager;
+    private final ServerConsole serverConsole;
 
-    public RequestHandler(CommandManager commandManager) {
+    public RequestHandler(CommandManager commandManager, ServerConsole serverConsole) {
         this.commandManager = commandManager;
+        this.serverConsole = serverConsole;
     }
 
     public Response handle(Request request) {
         ResponseCode responseCode = executeCommand(request.getCommandName(), request.getCommandStringArgument(),
                 request.getCommandObjectArgument());
-        return new Response(responseCode, ResponseOutputer.getAndClear());
+        return new Response(responseCode, serverConsole.getAndClear());
     }
 
     /**
@@ -34,6 +37,9 @@ public class RequestHandler {
     private ResponseCode executeCommand(String command, String commandStringArgument,
                                         Object commandObjectArgument) {
         //TODO Нужно сделать что-то на подобии метода processCommand в UserHandler
+
+        commandManager.executeCommand(command, commandStringArgument);
+
         return ResponseCode.OK;
     }
 }

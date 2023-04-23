@@ -41,6 +41,7 @@ public class CommandManager {
         putAllCommands();
     }
 
+    //этот конструктор не устанавливает console
     public CommandManager(CollectionManager collectionManager, FlatReader flatReader, FileManager fileManager) {
         this.collectionManager = collectionManager;
         this.flatReader = flatReader;
@@ -89,6 +90,19 @@ public class CommandManager {
         }
     }
 
+    /**
+     * Метод сразу передает команду на исполнение
+     *
+     * @param command название команды
+     * @param args аргументы команды
+     */
+    public void executeCommand(String command, String args) {
+        try {
+            executeCommand(new String[] {command, args});
+        } catch (InvalidCommandException | WrongArgumentException e) {
+            console.printCommandError(e.getMessage());
+        }
+    }
     //метод вызывает команду на исполнение
     private void executeCommand(String[] inputs) throws InvalidCommandException, WrongArgumentException {
 

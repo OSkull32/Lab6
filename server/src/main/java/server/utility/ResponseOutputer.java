@@ -27,8 +27,8 @@ public class ResponseOutputer {
      *
      * @param object объект
      */
-    public static void appendLn(Object object) {
-        stringBuilder.append(object + "\n");
+    public static void appendLn(String object) {
+        stringBuilder.append(object).append("\n");
     }
 
     /**
@@ -37,7 +37,7 @@ public class ResponseOutputer {
      * @param object описание ошибки
      */
     public static void appendError(Object object) {
-        stringBuilder.append("error: " + object + "\n");
+        stringBuilder.append("error: ").append(object).append("\n");
     }
 
     /**
