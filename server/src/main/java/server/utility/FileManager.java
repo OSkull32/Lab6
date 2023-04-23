@@ -11,11 +11,16 @@ import java.io.*;
  * @version 2.0
  */
 public class FileManager {
-    private final UserConsole console;
+    private UserConsole console;
     private File file;
+    private String envVariable;
 
     public FileManager(UserConsole console) {
         this.console = console;
+    }
+
+    public FileManager(String envVariavle) {
+        this.envVariable = envVariable;
     }
 
     /**

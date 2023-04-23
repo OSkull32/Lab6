@@ -19,7 +19,7 @@ import java.util.Set;
  * @version 2.0
  */
 public class CommandManager {
-    private final Console console;
+    private Console console;
     private final HashMap<String, Command> commands = new HashMap<>();
     private final ArrayList<String> historyList = new ArrayList<>();
     private final CollectionManager collectionManager;
@@ -35,6 +35,14 @@ public class CommandManager {
      */
     public CommandManager(Console console, CollectionManager collectionManager, FlatReader flatReader, FileManager fileManager) {
         this.console = console;
+        this.collectionManager = collectionManager;
+        this.flatReader = flatReader;
+        this.fileManager = fileManager;
+        putAllCommands();
+    }
+
+    //этот конструктор не устанавливает console
+    public CommandManager(CollectionManager collectionManager, FlatReader flatReader, FileManager fileManager) {
         this.collectionManager = collectionManager;
         this.flatReader = flatReader;
         this.fileManager = fileManager;
@@ -82,6 +90,19 @@ public class CommandManager {
         }
     }
 
+    /**
+     * Метод сразу передает команду на исполнение
+     *
+     * @param command название команды
+     * @param args аргументы команды
+     */
+    public void executeCommand(String command, String args) {
+        try {
+            executeCommand(new String[] {command, args});
+        } catch (InvalidCommandException | WrongArgumentException e) {
+            console.printCommandError(e.getMessage());
+        }
+    }
     //метод вызывает команду на исполнение
     private void executeCommand(String[] inputs) throws InvalidCommandException, WrongArgumentException {
 

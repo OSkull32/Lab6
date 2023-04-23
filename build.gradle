@@ -34,6 +34,7 @@ project(':client') {
     mainClassName = 'client.App'
     dependencies {
         implementation project(':common')
+        implementation group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.15'
     }
     run {
         standardInput = System.in

@@ -22,7 +22,8 @@ public class App {
     private static int port;
 
     public static void main(String[] args) {
-        if (!initializeConnectionAddress(args)) return;
+        String[] as = new String[]{"localhost","1821"};
+        if (!initializeConnectionAddress(as)) return;
         Scanner userScanner = new Scanner(System.in);
         UserHandler userHandler = new UserHandler(userScanner);
         Client client = new Client(host, port, RECONNECTION_TIMEOUT, MAX_RECONNECTION_ATTEMPTS, userHandler);
