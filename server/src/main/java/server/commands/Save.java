@@ -1,9 +1,9 @@
 package server.commands;
 
-import server.utility.CollectionManager;
+import common.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import server.utility.FileManager;
+import common.utility.FileManager;
 import server.utility.JsonParser;
 
 /**

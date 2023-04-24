@@ -28,8 +28,8 @@ public class UserConsole {
     /**
      * Конструктор класса без параметров. При вызове scanner производит чтение из стандартного потока ввода с кодировкой UTF-8
      */
-    public UserConsole() {
-        this.scanner = DEFAULT_SCANNER;
+    public UserConsole(Scanner scanner) {
+        this.scanner = scanner;
     }
 
     /**
