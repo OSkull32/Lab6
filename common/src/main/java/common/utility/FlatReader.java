@@ -16,7 +16,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     private boolean fileMode;
 
     // Поле, хранящее ссылку на объект класса типа Console
-    private Scanner userScanner;
+    private final Scanner userScanner;
 
     /**
      * Константа, хранящее шаблон (регулярное выражение), которому должны
@@ -74,7 +74,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
      */
     @Override
     public Flat read() {
-        return new Flat(read().getId(), readName(), readCoordinates(), LocalDateTime.now(), readArea(),
+        return new Flat(CollectionManager.generateId(),readName(),readCoordinates(), LocalDateTime.now(), readArea(),
                 readNumberOfRooms(), readNumberOfBathrooms(), readFurnish(), readView(), readHouse());
     }
 
@@ -87,7 +87,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     public String readName() {
         while (true) {
             UserConsole.printCommandText("name (not null): ");
-            String str = UserConsole.readLine().trim();
+            String str = userScanner.nextLine().trim();
             if (str.equals("")) UserConsole.printCommandError("Значение поля не может быть null или пустой строкой");
             else if (!str.matches(PATTERN_NAMES))
                 UserConsole.printCommandError("Введенная строка содержит запрещенные символы");
@@ -116,7 +116,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("coordinate x(int & x <= 713): ");
-                x = Integer.parseInt(UserConsole.readLine().trim());
+                x = Integer.parseInt(userScanner.nextLine().trim());
                 if (x > 713) throw new InvalidValueException();
                 else return x;
             } catch (InvalidValueException ex) {
@@ -138,7 +138,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("coordinate y(integer & not null & y > -397): ");
-                y = Integer.parseInt(UserConsole.readLine().trim());
+                y = Integer.parseInt(userScanner.nextLine().trim());
                 if (y <= -397) throw new InvalidValueException();
                 else return y;
             } catch (InvalidValueException ex) {
@@ -160,7 +160,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("area(int & area > 0): ");
-                area = Integer.parseInt(UserConsole.readLine().trim());
+                area = Integer.parseInt(userScanner.nextLine().trim());
                 if (area <= 0) throw new InvalidValueException();
                 else return area;
             } catch (InvalidValueException ex) {
@@ -182,7 +182,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("numberOfRooms(long & 0 < numberOfRooms <=14): ");
-                numberOfRooms = Long.parseLong(UserConsole.readLine().trim());
+                numberOfRooms = Long.parseLong(userScanner.nextLine().trim());
                 if (numberOfRooms <= 0 || numberOfRooms > 14) throw new InvalidValueException();
                 else return numberOfRooms;
             } catch (InvalidValueException ex) {
@@ -204,7 +204,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("numberOfBathrooms(long & numberOfBathrooms > 0): ");
-                numberOfBathrooms = Long.parseLong(UserConsole.readLine().trim());
+                numberOfBathrooms = Long.parseLong(userScanner.nextLine().trim());
                 if (numberOfBathrooms <= 0) throw new InvalidValueException();
                 else return numberOfBathrooms;
             } catch (InvalidValueException ex) {
@@ -231,7 +231,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
                     UserConsole.printCommandText(val.name() + "\n");
                 }
                 UserConsole.printCommandText("furnish: ");
-                furnish = Furnish.valueOf(UserConsole.readLine().toUpperCase().trim());
+                furnish = Furnish.valueOf(userScanner.nextLine().toUpperCase().trim());
                 return furnish;
             } catch (IllegalArgumentException ex) {
                 UserConsole.printCommandError("Введенная константа не представлена в допустимых значения Furnish");
@@ -255,7 +255,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
                     UserConsole.printCommandText(val.name() + "\n");
                 }
                 UserConsole.printCommandText("view: ");
-                String str = UserConsole.readLine().trim();
+                String str = userScanner.nextLine().trim();
                 if (str.equals("")) {
                     view = null;
                 } else {
@@ -277,7 +277,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
     public House readHouse() {
         while (true) {
             UserConsole.printCommandText("Нажмите enter, чтобы ввести в поле house null или введите House name (not null):");
-            String str = UserConsole.readLine().trim();
+            String str = userScanner.nextLine().trim();
             if (str.equals(""))
                 return null;
             else {
@@ -300,7 +300,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
 
         while (true) {
             UserConsole.printCommandText("House name (not null): ");
-            str = UserConsole.readLine().trim();
+            str = userScanner.nextLine().trim();
             if (str.equals("")) UserConsole.printCommandError("Значение поля не может быть null");
             else if (!str.matches(PATTERN_NAMES))
                 UserConsole.printCommandError("Введенная строка содержит запрещенные символы");
@@ -319,7 +319,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("houseYear(int & houseYear > 0): ");
-                houseYear = Integer.parseInt(UserConsole.readLine().trim());
+                houseYear = Integer.parseInt(userScanner.nextLine().trim());
                 if (houseYear <= 0) throw new InvalidValueException();
                 else return houseYear;
             } catch (InvalidValueException ex) {
@@ -341,7 +341,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("number of floors(long & 0 < numberOfFloors <= 39): ");
-                String str = UserConsole.readLine().trim();
+                String str = userScanner.nextLine().trim();
                 if (str.equals("")) numberOfFloors = null;
                 else {
                     numberOfFloors = Long.parseLong(str);
@@ -367,7 +367,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("number of flats on floor(long & numberOfFlatsOnFloor > 0): ");
-                numberOfFlatsOnFloor = Long.parseLong(UserConsole.readLine().trim());
+                numberOfFlatsOnFloor = Long.parseLong(userScanner.nextLine().trim());
                 if (numberOfFlatsOnFloor <= 0) throw new InvalidValueException();
                 else return numberOfFlatsOnFloor;
             } catch (InvalidValueException ex) {
@@ -389,7 +389,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         while (true) {
             try {
                 UserConsole.printCommandText("number of lifts(long & numberOfLifts > 0): ");
-                String str = UserConsole.readLine().trim();
+                String str = userScanner.nextLine().trim();
                 if (str.equals("")) numberOfLifts = null;
                 else {
                     numberOfLifts = Long.parseLong(str);
@@ -403,4 +403,5 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
             }
         }
     }
+
 }

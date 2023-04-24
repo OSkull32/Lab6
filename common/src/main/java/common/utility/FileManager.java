@@ -1,6 +1,4 @@
-package server.utility;
-
-import common.utility.UserConsole;
+package common.utility;
 
 import java.io.*;
 

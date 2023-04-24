@@ -5,8 +5,9 @@ import server.utility.*;
 import common.exceptions.InvalidCommandException;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import server.utility.FileManager;
+import common.utility.FileManager;
 import common.utility.FlatReader;
+import common.utility.CollectionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

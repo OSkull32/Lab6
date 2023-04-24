@@ -1,8 +1,8 @@
-package server.utility;
+package common.utility;
 
-import common.data.*;
+import common.data.Flat;
+import common.data.View;
 import common.exceptions.InvalidValueException;
-import common.utility.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,10 +52,17 @@ public class CollectionManager {
         }
     }
 
-    public CollectionManager(FileManager fileManager) {
+    public CollectionManager(FileManager fileManager, Hashtable<Integer, Flat> hashtable) {
+        if (hashtable != null) this.hashtable = hashtable;
+        else this.hashtable = new Hashtable<>();
+
         this.lastInitTime = null;
         this.lastSaveTime = null;
         this.fileManager = fileManager;
+
+        for (Flat flat : this.hashtable.values()){
+            allId.add(flat.getId());
+        }
     }
 
     /**
