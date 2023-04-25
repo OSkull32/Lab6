@@ -1,6 +1,6 @@
 package server.commands;
 
-import common.utility.CollectionManager;
+import server.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
 import common.utility.FileManager;

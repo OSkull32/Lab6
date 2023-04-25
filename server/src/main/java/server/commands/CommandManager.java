@@ -1,13 +1,11 @@
 package server.commands;
 
-import common.utility.UserConsole;
-import server.utility.*;
 import common.exceptions.InvalidCommandException;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
 import common.utility.FileManager;
 import common.utility.FlatReader;
-import common.utility.CollectionManager;
+import server.utility.CollectionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

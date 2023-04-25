@@ -2,9 +2,8 @@ package server;
 
 import common.data.Flat;
 import common.utility.FlatReader;
-import common.utility.UserConsole;
 import server.commands.CommandManager;
-import common.utility.CollectionManager;
+import server.utility.CollectionManager;
 import common.utility.FileManager;
 import server.utility.RequestHandler;
 import server.utility.ServerConsole;
