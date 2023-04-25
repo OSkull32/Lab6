@@ -50,7 +50,7 @@ public class Insert implements Command {
                         ServerFileManager.writeToFile(Paths.get(App.FILE_PATH), JsonParser.encode(collectionManager.getCollection()));
                         console.printCommandTextNext("Коллекция сохранена");
                     } catch (IOException e) {
-                        //todo
+                        console.printCommandTextNext("Ошибка при сохранении коллекции");
                     }
                 } else {
                     throw new WrongArgumentException("Переданный объект не соответствует типу Flat (объект типа: " + obj.getClass());

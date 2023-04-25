@@ -19,14 +19,12 @@ import java.util.Map;
 public class CollectionManager {
 
     // Коллекция, с которой осуществляется работа
-    private Hashtable<Integer, Flat> hashtable;
+    private final Hashtable<Integer, Flat> hashtable;
 
     private static final HashSet<Integer> allId = new HashSet<>();
-    private Console console;
+    private final Console console;
     // Время инициализации коллекции
-    private LocalDateTime collectionInitialization;
-
-    private FlatReader flatReader;
+    private final LocalDateTime collectionInitialization;
 
     private LocalDateTime lastInitTime;
     private LocalDateTime lastSaveTime;
@@ -39,23 +37,12 @@ public class CollectionManager {
     /**
      * Конструктор, создающий новый объект менеджера коллекции
      */
-    public CollectionManager(Console console, Hashtable<Integer, Flat> hashtable, FlatReader flatReader) {
+
+    public CollectionManager(Hashtable<Integer, Flat> hashtable, Console console) {
         if (hashtable != null) this.hashtable = hashtable;
         else this.hashtable = new Hashtable<>();
+
         this.console = console;
-        this.flatReader = flatReader;
-
-        String i = LocalDateTime.now().toString();
-        collectionInitialization = LocalDateTime.parse(i);
-
-        for (Flat flat : this.hashtable.values()) {
-            allId.add(flat.getId());
-        }
-    }
-
-    public CollectionManager(Hashtable<Integer, Flat> hashtable) {
-        if (hashtable != null) this.hashtable = hashtable;
-        else this.hashtable = new Hashtable<>();
 
         this.lastInitTime = null;
         this.lastSaveTime = null;
@@ -63,6 +50,8 @@ public class CollectionManager {
         for (Flat flat : this.hashtable.values()) {
             allId.add(flat.getId());
         }
+        String i = LocalDateTime.now().toString();
+        collectionInitialization = LocalDateTime.parse(i);
     }
 
     /**
@@ -114,12 +103,13 @@ public class CollectionManager {
         return -1;
     }
 
-    /**
+    /*
      * Метод, изменяющий поле выбранного элемента коллекции
      *
      * @param key   идентификатор
      * @param field имя поля
-     */
+     *
+
     public void update(int key, String field) throws InvalidValueException {
 
         switch (field) {
@@ -196,6 +186,7 @@ public class CollectionManager {
             }
         }
     }
+    */
 
     /**
      * Метод, удаляющий выбранный по идентификатору элемент коллекции

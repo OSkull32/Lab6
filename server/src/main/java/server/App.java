@@ -25,9 +25,9 @@ public class App {
             System.exit(0);
         }
 
-        CollectionManager collectionManager = new CollectionManager(hashtable);
-
         ServerConsole serverConsole = new ServerConsole();
+
+        CollectionManager collectionManager = new CollectionManager(hashtable, serverConsole);
         CommandManager commandManager = new CommandManager(serverConsole, collectionManager);
 
         RequestHandler requestHandler = new RequestHandler(commandManager, serverConsole);
