@@ -38,7 +38,7 @@ public class RequestHandler {
                                         Object commandObjectArgument) {
         //TODO Нужно сделать что-то на подобии метода processCommand в UserHandler
 
-        commandManager.executeCommand(command, commandStringArgument);
+        commandManager.executeCommand(command, commandStringArgument, commandObjectArgument);
 
         return ResponseCode.OK;
     }

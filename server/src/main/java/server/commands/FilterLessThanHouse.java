@@ -1,5 +1,6 @@
 package server.commands;
 
+import common.data.House;
 import server.utility.CollectionManager;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
@@ -19,17 +20,17 @@ public class FilterLessThanHouse implements Command {
 
     private final Console console;
     private final CollectionManager collectionManager;
-    private final FlatReader flatReader;
+    private final CommandManager commandManager;
 
     /**
      * Конструирует объект, привязывая его к конкретному объекту {@link CollectionManager}.
      *
      * @param collectionManager указывает на объект {@link CollectionManager}.
      */
-    public FilterLessThanHouse(CollectionManager collectionManager, Console console, FlatReader flatReader) {
+    public FilterLessThanHouse(CollectionManager collectionManager, Console console, CommandManager commandManager) {
         this.collectionManager = collectionManager;
         this.console = console;
-        this.flatReader = flatReader;
+        this.commandManager = commandManager;
     }
 
     /**
@@ -42,11 +43,20 @@ public class FilterLessThanHouse implements Command {
     public void execute(String args) throws WrongArgumentException {
         if (!args.isEmpty()) throw new WrongArgumentException();
         try {
-            console.printCommandTextNext("Введите поля House");
-            int year = flatReader.readHouseYear();
-            Long numberOfFloors = flatReader.readHouseNumberOfFloors();
-            long numberOfFlatsOnFloor = flatReader.readHouseNumberOfFlatsOnFloor();
-            Long numberOfLifts = flatReader.readHouseNumberOfLifts();
+            int year;
+            Long numberOfFloors;
+            long numberOfFlatsOnFloor;
+            Long numberOfLifts;
+
+            Object obj = commandManager.getCommandObjectArgument();
+            if (obj instanceof House house) { //pattern variable
+                year = house.getYear();
+                numberOfFloors = house.getNumberOfFloors();
+                numberOfFlatsOnFloor = house.getNumberOfFloors();
+                numberOfLifts = house.getNumberOfLifts();
+            } else {
+                throw new WrongArgumentException("Объект аргумента не соответствует типу House");
+            }
 
             Collection<Flat> flatCollection = collectionManager.getCollection().values();
             int countHouse = 0;

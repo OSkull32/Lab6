@@ -22,9 +22,8 @@ public class CommandManager {
     private final HashMap<String, Command> commands = new HashMap<>();
     private final ArrayList<String> historyList = new ArrayList<>();
     private final CollectionManager collectionManager;
-    private final FlatReader flatReader;
-    private final FileManager fileManager;
     private final int maxHistorySize = 13;
+    private Object commandObjectArgument;
 
     /**
      * Конструирует менеджера команд с заданными {@link Console}
@@ -32,19 +31,15 @@ public class CommandManager {
      * @param console Объект {@link Console}, через который класс
      *                осуществляет взаимодействие с пользователем.
      */
-    public CommandManager(Console console, CollectionManager collectionManager, FlatReader flatReader, FileManager fileManager) {
+    public CommandManager(Console console, CollectionManager collectionManager) {
         this.console = console;
         this.collectionManager = collectionManager;
-        this.flatReader = flatReader;
-        this.fileManager = fileManager;
         putAllCommands();
     }
 
     //этот конструктор не устанавливает console
-    public CommandManager(CollectionManager collectionManager, FlatReader flatReader, FileManager fileManager) {
+    public CommandManager(CollectionManager collectionManager, FlatReader flatReader) {
         this.collectionManager = collectionManager;
-        this.flatReader = flatReader;
-        this.fileManager = fileManager;
         putAllCommands();
     }
 
@@ -58,18 +53,18 @@ public class CommandManager {
         addCommand("clear", new Clear(collectionManager, console));
         addCommand("execute_script", new ExecuteScript(this, console));
         addCommand("exit", new Exit(console));
-        addCommand("filter_less_than_house", new FilterLessThanHouse(collectionManager, console, flatReader));
+        addCommand("filter_less_than_house", new FilterLessThanHouse(collectionManager, console, this));
         addCommand("help", new Help(this));
         addCommand("history", new History(this));
         addCommand("info", new Info(collectionManager));
         addCommand("update", new Update(collectionManager, console));
-        addCommand("insert", new Insert(collectionManager, console, flatReader));
+        addCommand("insert", new Insert(collectionManager, console, this));
         addCommand("print_field_ascending_house", new PrintFieldAscendingHouse(collectionManager, console));
         addCommand("remove_all_by_view", new RemoveAllByView(collectionManager, console));
         addCommand("remove_greater_key", new RemoveGreaterKey(collectionManager, console));
         addCommand("remove_key", new RemoveKey(collectionManager, console));
         addCommand("remove_lower_key", new RemoveLowerKey(collectionManager, console));
-        addCommand("save", new Save(collectionManager, console, fileManager));
+        //addCommand("save", new Save(collectionManager, console, fileManager));
         addCommand("show", new Show(collectionManager, console));
     }
 
@@ -95,7 +90,8 @@ public class CommandManager {
      * @param command название команды
      * @param args аргументы команды
      */
-    public void executeCommand(String command, String args) {
+    public void executeCommand(String command, String args, Object commandObjectArgument) {
+        this.commandObjectArgument = commandObjectArgument;
         try {
             executeCommand(new String[] {command, args});
         } catch (InvalidCommandException | WrongArgumentException e) {
@@ -120,6 +116,14 @@ public class CommandManager {
         if (historyList.size() > maxHistorySize) {
             historyList.remove(0);
         }
+    }
+
+    /**
+     * Метод возвращает объект, который был передан в реквесте вместе с командой
+     * (используется командами Insert и Filter_less_then_house)
+     */
+    public Object getCommandObjectArgument() {
+        return commandObjectArgument;
     }
 
     /**

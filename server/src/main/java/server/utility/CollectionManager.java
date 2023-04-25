@@ -31,7 +31,6 @@ public class CollectionManager {
 
     private LocalDateTime lastInitTime;
     private LocalDateTime lastSaveTime;
-    private FileManager fileManager;
 
     /**
      * Максимальный ID у объектов коллекции
@@ -55,13 +54,12 @@ public class CollectionManager {
         }
     }
 
-    public CollectionManager(FileManager fileManager, Hashtable<Integer, Flat> hashtable) {
+    public CollectionManager(Hashtable<Integer, Flat> hashtable) {
         if (hashtable != null) this.hashtable = hashtable;
         else this.hashtable = new Hashtable<>();
 
         this.lastInitTime = null;
         this.lastSaveTime = null;
-        this.fileManager = fileManager;
 
         for (Flat flat : this.hashtable.values()){
             allId.add(flat.getId());

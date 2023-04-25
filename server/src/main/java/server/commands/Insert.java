@@ -4,7 +4,6 @@ import server.utility.CollectionManager;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import common.utility.FlatReader;
 
 /**
  * Класс команды, которая добавляет элемент в коллекцию с заданным ключом
@@ -12,19 +11,18 @@ import common.utility.FlatReader;
 public class Insert implements Command {
     private final CollectionManager collectionManager;
     private final Console console;
-    private final FlatReader flatReader;
+    private final CommandManager commandManager;
 
     /**
      * Конструктор класса.
      *
      * @param collectionManager  Хранит ссылку на объект CollectionManager.
      * @param console            Хранит ссылку на объект класса Console.
-     * @param flatReader Хранит ссылку на объект, осуществляющий чтение полей из указанного в console потока ввода.
      */
-    public Insert(CollectionManager collectionManager, Console console, FlatReader flatReader) {
+    public Insert(CollectionManager collectionManager, Console console, CommandManager commandManager) {
         this.collectionManager = collectionManager;
         this.console = console;
-        this.flatReader = flatReader;
+        this.commandManager = commandManager;
     }
 
     /**
@@ -36,11 +34,17 @@ public class Insert implements Command {
         if (args.isEmpty()) throw new WrongArgumentException();
         try {
             if (!collectionManager.containsKey(Integer.parseInt(args))) {
-                console.printCommandTextNext("Введите значения полей для элемента коллекции");
-                Flat flat = flatReader.read();
-                collectionManager.insert(Integer.parseInt(args), flat);
-                console.printCommandTextNext("Элемент добавлен в коллекцию");
-            } else console.printCommandError("Элемент с данным ключом уже существует в коллекции");
+
+                Object obj = commandManager.getCommandObjectArgument();
+                if (obj instanceof Flat flat) {
+                    collectionManager.insert(Integer.parseInt(args), flat);
+                    console.printCommandTextNext("Элемент добавлен в коллекцию");
+                } else {
+                    throw new WrongArgumentException("Переданный объект не соответствует типу Flat (объект типа: " + obj.getClass());
+                }
+            } else {
+                console.printCommandError("Элемент с данным ключом уже существует в коллекции");
+            }
         } catch (IndexOutOfBoundsException ex) {
             console.printCommandError("Не указаны аргументы команды.");
         } catch (NumberFormatException ex) {
