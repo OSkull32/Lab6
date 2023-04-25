@@ -1,20 +1,14 @@
 package server;
 
 import common.data.Flat;
-import common.utility.FlatReader;
 import server.commands.CommandManager;
 import server.utility.*;
-import common.utility.FileManager;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class App {
-    //private static final Scanner scanner = new Scanner(System.in);
     public static final int PORT = 1821;
     public static final int CONNECTION_TIMEOUT = 60000;
     public static final Logger logger = Logger.getLogger(Server.class.getName());

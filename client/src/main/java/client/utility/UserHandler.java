@@ -1,10 +1,7 @@
 package client.utility;
 
 import client.App;
-import common.data.Coordinates;
-import common.data.Furnish;
-import common.data.House;
-import common.data.View;
+import common.data.*;
 import common.exceptions.CommandUsageException;
 import common.exceptions.ErrorInScriptException;
 import common.exceptions.RecursiveException;
@@ -84,10 +81,11 @@ public class UserHandler {
             try {
                 if (fileMode() && (serverResponseCode == ResponseCode.ERROR || processingCode == ProcessingCode.ERROR))
                     throw new ErrorInScriptException();
+                FlatReader flatReader = new FlatReader(userScanner);
                 switch (processingCode) {
                     case OBJECT -> {
-                        FlatValue flatAddValue = generateFlatAdd();
-                        return new Request(userCommand[0], userCommand[1], flatAddValue);
+                        //FlatValue flatAddValue = generateFlatAdd();
+                        return new Request(userCommand[0], userCommand[1], flatReader.read());
                     }
                     case UPDATE_OBJECT -> {
                         FlatValue flatUpdateValue = generateFlatUpdate();

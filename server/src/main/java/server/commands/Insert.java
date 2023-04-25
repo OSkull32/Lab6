@@ -1,9 +1,15 @@
 package server.commands;
 
+import server.App;
 import server.utility.CollectionManager;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.JsonParser;
+import server.utility.ServerFileManager;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Класс команды, которая добавляет элемент в коллекцию с заданным ключом
@@ -37,8 +43,15 @@ public class Insert implements Command {
 
                 Object obj = commandManager.getCommandObjectArgument();
                 if (obj instanceof Flat flat) {
+                    flat.setId(CollectionManager.generateId()); //устанавливается id
                     collectionManager.insert(Integer.parseInt(args), flat);
                     console.printCommandTextNext("Элемент добавлен в коллекцию");
+                    try {
+                        ServerFileManager.writeToFile(Paths.get(App.FILE_PATH), JsonParser.encode(collectionManager.getCollection()));
+                        console.printCommandTextNext("Коллекция сохранена");
+                    } catch (IOException e) {
+                        //todo
+                    }
                 } else {
                     throw new WrongArgumentException("Переданный объект не соответствует типу Flat (объект типа: " + obj.getClass());
                 }

@@ -52,7 +52,7 @@ public class CommandManager {
     private void putAllCommands() {
         addCommand("clear", new Clear(collectionManager, console));
         addCommand("execute_script", new ExecuteScript(this, console));
-        addCommand("exit", new Exit(console));
+        //addCommand("exit", new Exit(console));
         addCommand("filter_less_than_house", new FilterLessThanHouse(collectionManager, console, this));
         addCommand("help", new Help(this));
         addCommand("history", new History(this));

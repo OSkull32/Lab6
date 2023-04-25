@@ -3,18 +3,19 @@ package common.data;
 import com.google.gson.annotations.JsonAdapter;
 import common.utility.LocalDateTimeAdapter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
  * Класс объектов коллекции
  */
-public class Flat implements Comparable<Flat> {
+public class Flat implements Comparable<Flat>, Serializable {
 
     // Идентификатор коллекции. Значение поля должно быть больше 0,
     // Значение этого поля должно быть уникальным,
     // Значение этого поля должно генерироваться автоматически
-    private final int id;
+    private int id;
 
     // Имя объекта класса. Поле не может быть null, Строка не может быть пустой
     private String name;
@@ -161,6 +162,10 @@ public class Flat implements Comparable<Flat> {
      */
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setName(String name) {
