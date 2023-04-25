@@ -1,8 +1,8 @@
 package server.commands;
 
-import server.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 
 /**
  * Команда, очищающая коллекцию
@@ -11,7 +11,7 @@ public class Clear implements Command {
 
     // Поле, хранящее ссылку на объект класса collectionManager
     private final CollectionManager collectionManager;
-    private final Console CONSOLE;
+    private final Console console;
 
     /**
      * Конструктор класса
@@ -20,7 +20,7 @@ public class Clear implements Command {
      */
     public Clear(CollectionManager collectionManager, Console console) {
         this.collectionManager = collectionManager;
-        this.CONSOLE = console;
+        this.console = console;
     }
 
     /**
@@ -30,12 +30,12 @@ public class Clear implements Command {
     public void execute(String args) throws WrongArgumentException {
         if (!args.isEmpty()) throw new WrongArgumentException();
         collectionManager.clear();
-        CONSOLE.printCommandTextNext("Коллекция была очищена");
+        console.printCommandTextNext("Коллекция была очищена");
     }
 
     /**
-     * @see Command
      * @return Описание команды
+     * @see Command
      */
     @Override
     public String getDescription() {

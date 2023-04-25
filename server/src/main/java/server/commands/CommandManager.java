@@ -3,7 +3,6 @@ package server.commands;
 import common.exceptions.InvalidCommandException;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import common.utility.FileManager;
 import common.utility.FlatReader;
 import server.utility.CollectionManager;
 
@@ -33,12 +32,6 @@ public class CommandManager {
      */
     public CommandManager(Console console, CollectionManager collectionManager) {
         this.console = console;
-        this.collectionManager = collectionManager;
-        putAllCommands();
-    }
-
-    //этот конструктор не устанавливает console
-    public CommandManager(CollectionManager collectionManager, FlatReader flatReader) {
         this.collectionManager = collectionManager;
         putAllCommands();
     }
@@ -88,16 +81,17 @@ public class CommandManager {
      * Метод сразу передает команду на исполнение
      *
      * @param command название команды
-     * @param args аргументы команды
+     * @param args    аргументы команды
      */
     public void executeCommand(String command, String args, Object commandObjectArgument) {
         this.commandObjectArgument = commandObjectArgument;
         try {
-            executeCommand(new String[] {command, args});
+            executeCommand(new String[]{command, args});
         } catch (InvalidCommandException | WrongArgumentException e) {
             console.printCommandError(e.getMessage());
         }
     }
+
     //метод вызывает команду на исполнение
     private void executeCommand(String[] inputs) throws InvalidCommandException, WrongArgumentException {
 

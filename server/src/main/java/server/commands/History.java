@@ -4,19 +4,21 @@ import common.exceptions.WrongArgumentException;
 
 /**
  * Класс команды "history".
+ *
  * @author Kliodt Vadim
  * @version 1.0
  */
-public class History implements Command{
-    private final CommandManager COMMAND_MANAGER;
+public class History implements Command {
+    private final CommandManager commandManager;
 
     /**
      * Конструирует объект, привязывая его к конкретному объекту {@link CommandManager}.
+     *
      * @param commandManager указывает на объект {@link CommandManager}, в котором
      *                       будет вызываться соответствующий метод {@link CommandManager#getHistoryList()}.
      */
-    public History(CommandManager commandManager){
-        this.COMMAND_MANAGER = commandManager;
+    public History(CommandManager commandManager) {
+        this.commandManager = commandManager;
     }
 
     /**
@@ -25,7 +27,7 @@ public class History implements Command{
     @Override
     public void execute(String args) throws WrongArgumentException {
         if (!args.isEmpty()) throw new WrongArgumentException();
-        COMMAND_MANAGER.getHistoryList();
+        commandManager.getHistoryList();
     }
 
     /**

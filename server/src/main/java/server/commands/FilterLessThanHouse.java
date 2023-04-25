@@ -1,11 +1,10 @@
 package server.commands;
 
-import common.data.House;
-import server.utility.CollectionManager;
 import common.data.Flat;
+import common.data.House;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import common.utility.FlatReader;
+import server.utility.CollectionManager;
 
 import java.util.Collection;
 
@@ -60,12 +59,12 @@ public class FilterLessThanHouse implements Command {
 
             Collection<Flat> flatCollection = collectionManager.getCollection().values();
             int countHouse = 0;
-            for (Flat flat : flatCollection){
+            for (Flat flat : flatCollection) {
                 if (flat.getHouse() == null) continue;
                 if (flat.getHouse().getYear() < year
                         && flat.getHouse().getNumberOfFloors() < numberOfFloors
                         && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
-                        && flat.getHouse().getNumberOfLifts() < numberOfLifts){
+                        && flat.getHouse().getNumberOfLifts() < numberOfLifts) {
                     countHouse++;
                     console.printCommandTextNext(flat.getName() + "; ");
                 }

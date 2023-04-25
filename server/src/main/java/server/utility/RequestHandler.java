@@ -1,11 +1,8 @@
 package server.utility;
 
-import common.exceptions.CommandUsageException;
 import common.interaction.requests.Request;
 import common.interaction.responses.Response;
 import common.interaction.responses.ResponseCode;
-import common.utility.UserConsole;
-import server.Server;
 import server.commands.CommandManager;
 
 /**
@@ -29,7 +26,7 @@ public class RequestHandler {
     /**
      * Выполняет команду из запроса
      *
-     * @param command имя команды
+     * @param command               имя команды
      * @param commandStringArgument String аргумент команды
      * @param commandObjectArgument Object аргумента команды
      * @return статус исполнения

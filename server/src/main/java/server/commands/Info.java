@@ -1,12 +1,12 @@
 package server.commands;
 
-import server.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
+import server.utility.CollectionManager;
 
 /**
  * Класс команды, которая выводит информацию о коллекции
  */
-public class Info implements Command{
+public class Info implements Command {
     private final CollectionManager collectionManager;
 
     /**
@@ -28,8 +28,8 @@ public class Info implements Command{
     }
 
     /**
-     * @see Command
      * @return описание команды
+     * @see Command
      */
     @Override
     public String getDescription() {

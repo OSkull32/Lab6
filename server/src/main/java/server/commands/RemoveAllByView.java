@@ -1,14 +1,14 @@
 package server.commands;
 
-import server.utility.CollectionManager;
 import common.data.View;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 
 /**
  * Класс команды, удаляющая элементы вид которых, соответствует заданному
  */
-public class RemoveAllByView implements Command{
+public class RemoveAllByView implements Command {
     private final CollectionManager collectionManager;
     private final Console CONSOLE;
 
@@ -33,8 +33,7 @@ public class RemoveAllByView implements Command{
         try {
             if (args.equals("null")) {
                 collectionManager.removeAllByView(null);
-            }
-            else collectionManager.removeAllByView(View.valueOf(args));
+            } else collectionManager.removeAllByView(View.valueOf(args));
         } catch (IllegalArgumentException ex) {
             CONSOLE.printCommandError("Выбранной константы нет в перечислении.");
             CONSOLE.printCommandTextNext("Список всех констант:");
@@ -48,7 +47,6 @@ public class RemoveAllByView implements Command{
 
     /**
      * @return описание команды.
-     *
      * @see Command
      */
     @Override

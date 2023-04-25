@@ -1,15 +1,15 @@
 package server.commands;
 
-import server.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 
 /**
  * Класс команды, удаляющей элементы, ключ которых больше заданного.
  */
 public class RemoveGreaterKey implements Command {
     private final CollectionManager collectionManager;
-    private final Console CONSOLE;
+    private final Console console;
 
     /**
      * Конструктор класса.
@@ -18,7 +18,7 @@ public class RemoveGreaterKey implements Command {
      */
     public RemoveGreaterKey(CollectionManager collectionManager, Console console) {
         this.collectionManager = collectionManager;
-        this.CONSOLE = console;
+        this.console = console;
     }
 
     /**
@@ -29,11 +29,11 @@ public class RemoveGreaterKey implements Command {
         if (args.isEmpty()) throw new WrongArgumentException();
         try {
             collectionManager.removeGreaterKey(Integer.parseInt(args));
-            CONSOLE.printCommandTextNext("Элементы коллекции были удалены.");
+            console.printCommandTextNext("Элементы коллекции были удалены.");
         } catch (IndexOutOfBoundsException ex) {
-            CONSOLE.printCommandError("Не указан аргумент команды");
+            console.printCommandError("Не указан аргумент команды");
         } catch (NumberFormatException ex) {
-            CONSOLE.printCommandError("Формат аргумента не соответствует целочисленному " + ex.getMessage());
+            console.printCommandError("Формат аргумента не соответствует целочисленному " + ex.getMessage());
         }
     }
 

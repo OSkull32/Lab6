@@ -1,10 +1,10 @@
 package server.commands;
 
-import server.App;
-import server.utility.CollectionManager;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.App;
+import server.utility.CollectionManager;
 import server.utility.JsonParser;
 import server.utility.ServerFileManager;
 
@@ -22,8 +22,8 @@ public class Insert implements Command {
     /**
      * Конструктор класса.
      *
-     * @param collectionManager  Хранит ссылку на объект CollectionManager.
-     * @param console            Хранит ссылку на объект класса Console.
+     * @param collectionManager Хранит ссылку на объект CollectionManager.
+     * @param console           Хранит ссылку на объект класса Console.
      */
     public Insert(CollectionManager collectionManager, Console console, CommandManager commandManager) {
         this.collectionManager = collectionManager;
