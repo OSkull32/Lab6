@@ -84,10 +84,12 @@ public class UserHandler {
                 switch (processingCode) {
                     case OBJECT -> {
                         //FlatValue flatAddValue = generateFlatAdd();
+                        int x = Integer.parseInt(userCommand[1]);
                         return new Request(userCommand[0], userCommand[1], flatReader.read());
                     }
                     case UPDATE_OBJECT -> {
                         Flat flatUpdateValue = generateFlatUpdate();
+                        int x = Integer.parseInt(userCommand[1]);
                         return new Request(userCommand[0], userCommand[1], flatUpdateValue);
                     }
                     case UPDATE_OBJECT_HOUSE -> {
@@ -110,8 +112,10 @@ public class UserHandler {
             } catch (RecursiveException ex) {
                 UserConsole.printCommandError("Скрипт вызывается рекурсивно");
                 throw new ErrorInScriptException();
+            } catch (NumberFormatException ex) {
+
             } catch (Exception ex) {
-                UserConsole.printCommandError("Выполнение скрипта прервано");
+                UserConsole.printCommandError("Выполнение команды прервано");
             }
         } catch (ErrorInScriptException ex) {
             UserConsole.printCommandError("Выполнение скрипта прервано");
@@ -236,7 +240,7 @@ public class UserHandler {
                 flatReader.readFurnish() : null);
         View view = (flatReader.askQuestion("Хотите изменить вид из квартиры?") ?
                 flatReader.readView() : null);
-        House house = (flatReader.askQuestion("Хотите изменить мебель в квартире?") ?
+        House house = (flatReader.askQuestion("Хотите изменить house в квартире?") ?
                 flatReader.readHouse() : null);
         return new Flat(
                 name,
