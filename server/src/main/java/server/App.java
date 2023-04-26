@@ -32,7 +32,11 @@ public class App {
 
         RequestHandler requestHandler = new RequestHandler(commandManager, serverConsole);
 
-        Server server = new Server(PORT, CONNECTION_TIMEOUT, requestHandler);
+        Server server = new Server(PORT, CONNECTION_TIMEOUT, requestHandler, collectionManager);
+
+        Thread managingServer = new Thread(server::manageServer);
+        managingServer.start();
+
         server.run();
     }
 }
