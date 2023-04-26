@@ -7,26 +7,33 @@ import common.interaction.requests.Request;
 import common.interaction.responses.Response;
 import common.interaction.responses.ResponseCode;
 import common.utility.UserConsole;
+import server.utility.CollectionManager;
+import server.utility.JsonParser;
 import server.utility.RequestHandler;
+import server.utility.ServerFileManager;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.file.Paths;
+import java.util.Scanner;
 
 /**
  * Клас, который запускает сервер
  */
 public class Server {
-    private int port;
-    private int soTimeout;
+    private final int port;
+    private final int soTimeout;
     private ServerSocket serverSocket;
-    private RequestHandler requestHandler;
+    private final RequestHandler requestHandler;
+    private final CollectionManager collectionManager;
 
-    public Server(int port, int soTimeout, RequestHandler requestHandler) {
+    public Server(int port, int soTimeout, RequestHandler requestHandler, CollectionManager collectionManager) {
         this.port = port;
         this.soTimeout = soTimeout;
         this.requestHandler = requestHandler;
+        this.collectionManager = collectionManager;
     }
 
     public void run() {
@@ -152,5 +159,35 @@ public class Server {
             }
         }
         return true;
+    }
+
+    /**
+     * Метод запускает управление сервера через серверную консоль
+     */
+    public void manageServer() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            String command = scanner.nextLine();
+            switch (command) {
+                case "exit" -> {
+                    try {
+                        ServerFileManager.writeToFile(Paths.get(App.FILE_PATH), JsonParser.encode(collectionManager.getCollection()));
+                        System.out.println("Коллекция сохранена");
+                    } catch (IOException e) {
+                        System.out.println("Ошибка при сохранении коллекции");
+                    }
+                    try {
+                        if (!serverSocket.isClosed()) serverSocket.close();
+                    } catch (IOException e) {
+                        //
+                    }
+                    System.out.println("Выхожу");
+                    System.exit(0);
+                }
+                default -> {
+                    System.out.println("Неизвестная команда");
+                }
+            }
+        }
     }
 }

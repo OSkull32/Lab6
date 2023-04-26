@@ -46,12 +46,6 @@ public class Insert implements Command {
                     flat.setId(CollectionManager.generateId()); //устанавливается id
                     collectionManager.insert(Integer.parseInt(args), flat);
                     console.printCommandTextNext("Элемент добавлен в коллекцию");
-                    try {
-                        ServerFileManager.writeToFile(Paths.get(App.FILE_PATH), JsonParser.encode(collectionManager.getCollection()));
-                        console.printCommandTextNext("Коллекция сохранена");
-                    } catch (IOException e) {
-                        console.printCommandTextNext("Ошибка при сохранении коллекции");
-                    }
                 } else {
                     throw new WrongArgumentException("Переданный объект не соответствует типу Flat (объект типа: " + obj.getClass());
                 }
