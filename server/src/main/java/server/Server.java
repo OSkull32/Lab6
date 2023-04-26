@@ -34,7 +34,7 @@ public class Server {
             openServerSocket();
             boolean processingStatus = true;
             while (processingStatus) {
-                try (Socket clientSocket = connectToClient()){
+                try (Socket clientSocket = connectToClient()) {
                     processingStatus = processClientRequest(clientSocket);
                 } catch (ConnectionErrorException | SocketTimeoutException ex) {
                     break;
@@ -96,7 +96,7 @@ public class Server {
      *
      * @return clientSocket
      * @throws ConnectionErrorException Ошибка при подключении
-     * @throws SocketTimeoutException Превышено время ожидания подключения
+     * @throws SocketTimeoutException   Превышено время ожидания подключения
      */
     private Socket connectToClient() throws ConnectionErrorException, SocketTimeoutException {
         try {

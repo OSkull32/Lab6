@@ -1,15 +1,15 @@
 package server.commands;
 
-import common.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 
 /**
  * Класс команды, которая удаляет элемент
  */
-public class RemoveKey implements Command{
+public class RemoveKey implements Command {
     private final CollectionManager collectionManager;
-    private final Console CONSOLE;
+    private final Console console;
 
     /**
      * Конструктор класса.
@@ -18,7 +18,7 @@ public class RemoveKey implements Command{
      */
     public RemoveKey(CollectionManager collectionManager, Console console) {
         this.collectionManager = collectionManager;
-        this.CONSOLE = console;
+        this.console = console;
     }
 
     /**
@@ -30,12 +30,12 @@ public class RemoveKey implements Command{
         try {
             if (collectionManager.containsKey(Integer.parseInt(args))) {
                 collectionManager.removeKey(Integer.parseInt(args));
-                CONSOLE.printCommandTextNext("Элемент коллекции был удален.");
-            } else CONSOLE.printCommandTextNext("Данного элемента коллекции не существует");
+                console.printCommandTextNext("Элемент коллекции был удален.");
+            } else console.printCommandTextNext("Данного элемента коллекции не существует");
         } catch (IndexOutOfBoundsException ex) {
-            CONSOLE.printCommandError("Не указаны аргументы команды");
+            console.printCommandError("Не указаны аргументы команды");
         } catch (NumberFormatException ex) {
-            CONSOLE.printCommandError("Формат аргумента не соответствует целочисленному " + ex.getMessage());
+            console.printCommandError("Формат аргумента не соответствует целочисленному " + ex.getMessage());
         }
     }
 

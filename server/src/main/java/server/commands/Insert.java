@@ -1,10 +1,15 @@
 package server.commands;
 
-import common.utility.CollectionManager;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import common.utility.FlatReader;
+import server.App;
+import server.utility.CollectionManager;
+import server.utility.JsonParser;
+import server.utility.ServerFileManager;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Класс команды, которая добавляет элемент в коллекцию с заданным ключом
@@ -12,19 +17,18 @@ import common.utility.FlatReader;
 public class Insert implements Command {
     private final CollectionManager collectionManager;
     private final Console console;
-    private final FlatReader flatReader;
+    private final CommandManager commandManager;
 
     /**
      * Конструктор класса.
      *
-     * @param collectionManager  Хранит ссылку на объект CollectionManager.
-     * @param console            Хранит ссылку на объект класса Console.
-     * @param flatReader Хранит ссылку на объект, осуществляющий чтение полей из указанного в console потока ввода.
+     * @param collectionManager Хранит ссылку на объект CollectionManager.
+     * @param console           Хранит ссылку на объект класса Console.
      */
-    public Insert(CollectionManager collectionManager, Console console, FlatReader flatReader) {
+    public Insert(CollectionManager collectionManager, Console console, CommandManager commandManager) {
         this.collectionManager = collectionManager;
         this.console = console;
-        this.flatReader = flatReader;
+        this.commandManager = commandManager;
     }
 
     /**
@@ -36,11 +40,24 @@ public class Insert implements Command {
         if (args.isEmpty()) throw new WrongArgumentException();
         try {
             if (!collectionManager.containsKey(Integer.parseInt(args))) {
-                console.printCommandTextNext("Введите значения полей для элемента коллекции");
-                Flat flat = flatReader.read();
-                collectionManager.insert(Integer.parseInt(args), flat);
-                console.printCommandTextNext("Элемент добавлен в коллекцию");
-            } else console.printCommandError("Элемент с данным ключом уже существует в коллекции");
+
+                Object obj = commandManager.getCommandObjectArgument();
+                if (obj instanceof Flat flat) {
+                    flat.setId(CollectionManager.generateId()); //устанавливается id
+                    collectionManager.insert(Integer.parseInt(args), flat);
+                    console.printCommandTextNext("Элемент добавлен в коллекцию");
+                    try {
+                        ServerFileManager.writeToFile(Paths.get(App.FILE_PATH), JsonParser.encode(collectionManager.getCollection()));
+                        console.printCommandTextNext("Коллекция сохранена");
+                    } catch (IOException e) {
+                        console.printCommandTextNext("Ошибка при сохранении коллекции");
+                    }
+                } else {
+                    throw new WrongArgumentException("Переданный объект не соответствует типу Flat (объект типа: " + obj.getClass());
+                }
+            } else {
+                console.printCommandError("Элемент с данным ключом уже существует в коллекции");
+            }
         } catch (IndexOutOfBoundsException ex) {
             console.printCommandError("Не указаны аргументы команды.");
         } catch (NumberFormatException ex) {

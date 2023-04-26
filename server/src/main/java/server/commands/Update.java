@@ -1,17 +1,17 @@
 package server.commands;
 
-import common.utility.CollectionManager;
-import common.data.*;
-import common.exceptions.InvalidValueException;
+import common.data.Furnish;
+import common.data.View;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 
 import java.util.Arrays;
 
 /**
  * Класс команды, которая обновляет значение элемента коллекции с выбранным id
  */
-public class Update implements Command{
+public class Update implements Command {
 
     private final CollectionManager collectionManager;
 
@@ -19,7 +19,7 @@ public class Update implements Command{
 
     /**
      * @param collectionManager Хранит ссылку на созданный объект CollectionManager.
-     * @param console            Хранит ссылку на объект класса Console.
+     * @param console           Хранит ссылку на объект класса Console.
      */
     public Update(CollectionManager collectionManager, Console console) {
         this.collectionManager = collectionManager;
@@ -37,6 +37,7 @@ public class Update implements Command{
         int id = Integer.parseInt(args);
         int key = collectionManager.getKey(id);
         try {
+            /*
             if (collectionManager.containsKey(key)) {
 
                 console.printCommandTextNext(getFieldName());
@@ -54,6 +55,7 @@ public class Update implements Command{
 
                 } while (!command.equals("stop"));
             } else console.printCommandError("Элемента с данным id не существует");
+             */
         } catch (IndexOutOfBoundsException ex) {
             console.printCommandError("Не указаны все аргументы команды");
         } catch (NumberFormatException ex) {

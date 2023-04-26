@@ -74,7 +74,7 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
      */
     @Override
     public Flat read() {
-        return new Flat(CollectionManager.generateId(),readName(),readCoordinates(), LocalDateTime.now(), readArea(),
+        return new Flat(-1,readName(),readCoordinates(), LocalDateTime.now(), readArea(),
                 readNumberOfRooms(), readNumberOfBathrooms(), readFurnish(), readView(), readHouse());
     }
 

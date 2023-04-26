@@ -1,8 +1,10 @@
-package common.utility;
+package server.utility;
 
 import common.data.Flat;
 import common.data.View;
 import common.exceptions.InvalidValueException;
+import common.utility.Console;
+import common.utility.FlatReader;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,18 +19,15 @@ import java.util.Map;
 public class CollectionManager {
 
     // Коллекция, с которой осуществляется работа
-    private Hashtable<Integer, Flat> hashtable;
+    private final Hashtable<Integer, Flat> hashtable;
 
     private static final HashSet<Integer> allId = new HashSet<>();
-    private Console console;
+    private final Console console;
     // Время инициализации коллекции
-    private LocalDateTime collectionInitialization;
-
-    private FlatReader flatReader;
+    private final LocalDateTime collectionInitialization;
 
     private LocalDateTime lastInitTime;
     private LocalDateTime lastSaveTime;
-    private FileManager fileManager;
 
     /**
      * Максимальный ID у объектов коллекции
@@ -38,38 +37,29 @@ public class CollectionManager {
     /**
      * Конструктор, создающий новый объект менеджера коллекции
      */
-    public CollectionManager(Console console, Hashtable<Integer, Flat> hashtable, FlatReader flatReader) {
+
+    public CollectionManager(Hashtable<Integer, Flat> hashtable, Console console) {
         if (hashtable != null) this.hashtable = hashtable;
         else this.hashtable = new Hashtable<>();
+
         this.console = console;
-        this.flatReader = flatReader;
-
-        String i = LocalDateTime.now().toString();
-        collectionInitialization = LocalDateTime.parse(i);
-
-        for (Flat flat : this.hashtable.values()){
-            allId.add(flat.getId());
-        }
-    }
-
-    public CollectionManager(FileManager fileManager, Hashtable<Integer, Flat> hashtable) {
-        if (hashtable != null) this.hashtable = hashtable;
-        else this.hashtable = new Hashtable<>();
 
         this.lastInitTime = null;
         this.lastSaveTime = null;
-        this.fileManager = fileManager;
 
-        for (Flat flat : this.hashtable.values()){
+        for (Flat flat : this.hashtable.values()) {
             allId.add(flat.getId());
         }
+        String i = LocalDateTime.now().toString();
+        collectionInitialization = LocalDateTime.parse(i);
     }
 
     /**
      * Метод возвращает коллекцию целиком
+     *
      * @return коллекция
      */
-    public Hashtable<Integer, Flat> getCollection(){
+    public Hashtable<Integer, Flat> getCollection() {
         return hashtable;
     }
 
@@ -88,7 +78,7 @@ public class CollectionManager {
     /**
      * Метод, добавляющий новый элемент в коллекцию
      *
-     * @param key   идентификатор элемента
+     * @param key  идентификатор элемента
      * @param flat элемент коллекции, который нужно добавить
      */
     public void insert(Integer key, Flat flat) {
@@ -104,20 +94,22 @@ public class CollectionManager {
      * @param id id
      * @return ключ
      */
-    public int getKey(int id){
-        for (int key : hashtable.keySet()){
+    public int getKey(int id) {
+        for (int key : hashtable.keySet()) {
             if (hashtable.get(key).getId() == id) {
                 return key;
             }
         }
         return -1;
     }
-    /**
+
+    /*
      * Метод, изменяющий поле выбранного элемента коллекции
      *
-     * @param key идентификатор
+     * @param key   идентификатор
      * @param field имя поля
-     */
+     *
+
     public void update(int key, String field) throws InvalidValueException {
 
         switch (field) {
@@ -194,6 +186,7 @@ public class CollectionManager {
             }
         }
     }
+    */
 
     /**
      * Метод, удаляющий выбранный по идентификатору элемент коллекции
@@ -277,11 +270,11 @@ public class CollectionManager {
      *
      * @return уникальный id
      */
-    public static int generateId(){
+    public static int generateId() {
         int id;
         do {
             id = (int) (MAX_ID * Math.random() + 1);
-        }while (allId.contains(id));
+        } while (allId.contains(id));
         allId.add(id);
         return id;
     }

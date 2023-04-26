@@ -1,9 +1,9 @@
 package server.commands;
 
-import common.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
 import common.utility.FileManager;
+import server.utility.CollectionManager;
 import server.utility.JsonParser;
 
 /**
@@ -12,10 +12,11 @@ import server.utility.JsonParser;
  * @author Kliodt Vadim
  * @version 1.0
  */
-public class Save implements Command{
+public class Save implements Command {
     private final CollectionManager collectionManager;
     private final Console console;
     private final FileManager fileManager;
+
     /**
      * Конструктор класса
      *

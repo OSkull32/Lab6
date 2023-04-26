@@ -1,10 +1,10 @@
 package server.commands;
 
-import common.utility.CollectionManager;
 import common.data.Flat;
+import common.data.House;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import common.utility.FlatReader;
+import server.utility.CollectionManager;
 
 import java.util.Collection;
 
@@ -19,17 +19,17 @@ public class FilterLessThanHouse implements Command {
 
     private final Console console;
     private final CollectionManager collectionManager;
-    private final FlatReader flatReader;
+    private final CommandManager commandManager;
 
     /**
      * Конструирует объект, привязывая его к конкретному объекту {@link CollectionManager}.
      *
      * @param collectionManager указывает на объект {@link CollectionManager}.
      */
-    public FilterLessThanHouse(CollectionManager collectionManager, Console console, FlatReader flatReader) {
+    public FilterLessThanHouse(CollectionManager collectionManager, Console console, CommandManager commandManager) {
         this.collectionManager = collectionManager;
         this.console = console;
-        this.flatReader = flatReader;
+        this.commandManager = commandManager;
     }
 
     /**
@@ -42,20 +42,29 @@ public class FilterLessThanHouse implements Command {
     public void execute(String args) throws WrongArgumentException {
         if (!args.isEmpty()) throw new WrongArgumentException();
         try {
-            console.printCommandTextNext("Введите поля House");
-            int year = flatReader.readHouseYear();
-            Long numberOfFloors = flatReader.readHouseNumberOfFloors();
-            long numberOfFlatsOnFloor = flatReader.readHouseNumberOfFlatsOnFloor();
-            Long numberOfLifts = flatReader.readHouseNumberOfLifts();
+            int year;
+            Long numberOfFloors;
+            long numberOfFlatsOnFloor;
+            Long numberOfLifts;
+
+            Object obj = commandManager.getCommandObjectArgument();
+            if (obj instanceof House house) { //pattern variable
+                year = house.getYear();
+                numberOfFloors = house.getNumberOfFloors();
+                numberOfFlatsOnFloor = house.getNumberOfFloors();
+                numberOfLifts = house.getNumberOfLifts();
+            } else {
+                throw new WrongArgumentException("Объект аргумента не соответствует типу House (объект типа: " + obj.getClass());
+            }
 
             Collection<Flat> flatCollection = collectionManager.getCollection().values();
             int countHouse = 0;
-            for (Flat flat : flatCollection){
+            for (Flat flat : flatCollection) {
                 if (flat.getHouse() == null) continue;
                 if (flat.getHouse().getYear() < year
                         && flat.getHouse().getNumberOfFloors() < numberOfFloors
                         && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
-                        && flat.getHouse().getNumberOfLifts() < numberOfLifts){
+                        && flat.getHouse().getNumberOfLifts() < numberOfLifts) {
                     countHouse++;
                     console.printCommandTextNext(flat.getName() + "; ");
                 }

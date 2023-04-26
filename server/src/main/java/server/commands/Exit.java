@@ -7,7 +7,7 @@ import common.utility.Console;
  * Класс команды, которая завершает работу программы
  */
 public class Exit implements Command {
-    private final Console CONSOLE;
+    private final Console console;
 
     /**
      * Конструктор класса
@@ -15,7 +15,7 @@ public class Exit implements Command {
      * @param console консоль
      */
     public Exit(Console console) {
-        this.CONSOLE = console;
+        this.console = console;
     }
 
     /**
@@ -24,7 +24,7 @@ public class Exit implements Command {
     @Override
     public void execute(String args) throws WrongArgumentException {
         if (!args.isEmpty()) throw new WrongArgumentException();
-        CONSOLE.printCommandTextNext("Завершение работы программы");
+        console.printCommandTextNext("Завершение работы программы");
         System.exit(0);
     }
 

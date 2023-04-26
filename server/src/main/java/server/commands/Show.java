@@ -1,16 +1,16 @@
 package server.commands;
 
-import common.utility.CollectionManager;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 
 import java.util.Hashtable;
 
 /**
  * Класс команды, которая показывает содержимое коллекции
  */
-public class Show implements Command{
+public class Show implements Command {
 
     private final CollectionManager collectionManager;
     private final Console console;
@@ -36,14 +36,14 @@ public class Show implements Command{
             console.printCommandTextNext("Коллекция пуста.");
         } else {
             for (int key : hashtable.keySet()) {
-                console.printCommandTextNext("\nЭлемент: " + key +"\n"+ hashtable.get(key).toString());
+                console.printCommandTextNext("\nЭлемент: " + key + "\n" + hashtable.get(key).toString());
             }
         }
     }
 
     /**
-     * @see Command
      * @return описание команды
+     * @see Command
      */
     @Override
     public String getDescription() {

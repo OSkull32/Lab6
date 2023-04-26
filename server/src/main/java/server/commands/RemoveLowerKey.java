@@ -1,15 +1,15 @@
 package server.commands;
 
-import common.utility.CollectionManager;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 
 /**
  * Класс команды, удаляющий элементы, у которых id меньше заданного ключа
  */
-public class RemoveLowerKey implements Command{
+public class RemoveLowerKey implements Command {
     private final CollectionManager collectionManager;
-    private final Console CONSOLE;
+    private final Console console;
 
     /**
      * Конструктор класса.
@@ -18,7 +18,7 @@ public class RemoveLowerKey implements Command{
      */
     public RemoveLowerKey(CollectionManager collectionManager, Console console) {
         this.collectionManager = collectionManager;
-        this.CONSOLE = console;
+        this.console = console;
     }
 
     /**
@@ -29,17 +29,17 @@ public class RemoveLowerKey implements Command{
         if (args.isEmpty()) throw new WrongArgumentException();
         try {
             collectionManager.removeLowerKey(Integer.parseInt(args));
-            CONSOLE.printCommandTextNext("Элементы коллекции были удалены.");
+            console.printCommandTextNext("Элементы коллекции были удалены.");
         } catch (IndexOutOfBoundsException ex) {
-            CONSOLE.printCommandError("Не указан аргумент команды");
+            console.printCommandError("Не указан аргумент команды");
         } catch (NumberFormatException ex) {
-            CONSOLE.printCommandError("Формат аргумента не соответствует целочисленному " + ex.getMessage());
+            console.printCommandError("Формат аргумента не соответствует целочисленному " + ex.getMessage());
         }
     }
 
     /**
-     * @see Command
      * @return описание команды.
+     * @see Command
      */
     @Override
     public String getDescription() {

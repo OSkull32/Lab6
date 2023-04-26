@@ -1,3 +1,5 @@
+.gitignore
+/my_resources/
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

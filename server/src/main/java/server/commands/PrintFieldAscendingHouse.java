@@ -1,9 +1,9 @@
 package server.commands;
 
-import common.utility.CollectionManager;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
+import server.utility.CollectionManager;
 import server.utility.SortByHouse;
 
 import java.util.ArrayList;

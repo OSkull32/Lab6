@@ -9,7 +9,7 @@ import common.exceptions.WrongArgumentException;
  * @version 1.1
  */
 public class Help implements Command {
-    private final CommandManager COMMAND_MANAGER;
+    private final CommandManager commandManager;
 
     /**
      * Конструирует объект, привязывая его к конкретному объекту {@link CommandManager}.
@@ -18,7 +18,7 @@ public class Help implements Command {
      *                       будет вызываться соответствующий метод {@link CommandManager#getCommandsInfo()}.
      */
     public Help(CommandManager commandManager) {
-        this.COMMAND_MANAGER = commandManager;
+        this.commandManager = commandManager;
     }
 
     /**
@@ -27,7 +27,7 @@ public class Help implements Command {
     @Override
     public void execute(String args) throws WrongArgumentException {
         if (!args.isEmpty()) throw new WrongArgumentException();
-        COMMAND_MANAGER.getCommandsInfo();
+        commandManager.getCommandsInfo();
     }
 
     /**
