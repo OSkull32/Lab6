@@ -74,6 +74,17 @@ public class Flat implements Comparable<Flat>, Serializable {
         this.house = house;
     }
 
+    public Flat(String name, Coordinates coordinates, int area, long numberOfRooms, long numberOfBathrooms, Furnish furnish, View view, House house) {
+        this.name = name;
+        this.coordinates = coordinates;
+        this.area = area;
+        this.numberOfRooms = numberOfRooms;
+        this.numberOfBathrooms = numberOfBathrooms;
+        this.furnish = furnish;
+        this.view = view;
+        this.house = house;
+    }
+
     /**
      * Метод, возвращающий имя объекта класса
      *
