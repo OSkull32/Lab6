@@ -47,7 +47,7 @@ public class Insert implements Command {
                     collectionManager.insert(Integer.parseInt(args), flat);
                     console.printCommandTextNext("Элемент добавлен в коллекцию");
                 } else {
-                    throw new WrongArgumentException("Переданный объект не соответствует типу Flat (объект типа: " + obj.getClass());
+                    throw new WrongArgumentException("Переданный объект не соответствует типу Flat");
                 }
             } else {
                 console.printCommandError("Элемент с данным ключом уже существует в коллекции");
