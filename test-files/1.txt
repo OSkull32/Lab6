@@ -1,2 +1,0 @@
-execute_script test-files\2.txt
-help 
