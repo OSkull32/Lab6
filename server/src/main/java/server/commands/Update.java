@@ -1,5 +1,6 @@
 package server.commands;
 
+import common.data.Flat;
 import common.data.Furnish;
 import common.data.View;
 import common.exceptions.WrongArgumentException;
@@ -14,16 +15,17 @@ import java.util.Arrays;
 public class Update implements Command {
 
     private final CollectionManager collectionManager;
-
+    private final CommandManager commandManager;
     private final Console console;
 
     /**
      * @param collectionManager Хранит ссылку на созданный объект CollectionManager.
      * @param console           Хранит ссылку на объект класса Console.
      */
-    public Update(CollectionManager collectionManager, Console console) {
+    public Update(CollectionManager collectionManager, Console console, CommandManager commandManager) {
         this.collectionManager = collectionManager;
         this.console = console;
+        this.commandManager = commandManager;
     }
 
     /**
@@ -34,28 +36,30 @@ public class Update implements Command {
     public void execute(String args) throws WrongArgumentException {
         if (args.isEmpty()) throw new WrongArgumentException();
 
-        int id = Integer.parseInt(args);
-        int key = collectionManager.getKey(id);
         try {
-            /*
+            int id = Integer.parseInt(args);
+            int key = collectionManager.getKey(id);
             if (collectionManager.containsKey(key)) {
 
-                console.printCommandTextNext(getFieldName());
+                Object obj = commandManager.getCommandObjectArgument();
+                if (obj instanceof Flat newFlat) {
+                    Flat oldFlat = collectionManager.getCollection().get(key);
+                    if (newFlat.getName() != null) oldFlat.setName(newFlat.getName());
+                    if (newFlat.getCoordinates() != null) oldFlat.setCoordinates(newFlat.getCoordinates());
+                    if (newFlat.getArea() != -1) oldFlat.setArea(newFlat.getArea());
+                    if (newFlat.getNumberOfRooms() != -1) oldFlat.setNumberOfRooms(newFlat.getNumberOfRooms());
+                    if (newFlat.getNumberOfBathrooms() != -1) oldFlat.setNumberOfBathrooms(newFlat.getNumberOfBathrooms());
+                    if (newFlat.getFurnish() != null) oldFlat.setFurnish(newFlat.getFurnish());
+                    if (newFlat.getView() != null) oldFlat.setView(newFlat.getView());
+                    if (newFlat.getHouse() != null) oldFlat.setHouse(newFlat.getHouse());
 
-                String command;
-                do {
-                    console.printCommandText("Введите название поля для изменения, " +
-                            "\"stop\", чтобы остановить изменения: ");
-                    command = console.readLine().trim();
-                    try {
-                        collectionManager.update(key, command);
-                    } catch (InvalidValueException ex) {
-                        console.printCommandTextNext("Поле не распознано. Повторите ввод.");
-                    }
-
-                } while (!command.equals("stop"));
-            } else console.printCommandError("Элемента с данным id не существует");
-             */
+                    console.printCommandTextNext("Элемент обновлен");
+                } else {
+                    throw new WrongArgumentException("Переданный объект не соответствует типу Flat");
+                }
+            } else {
+                console.printCommandError("Элемента с данным id не существует в коллекции");
+            }
         } catch (IndexOutOfBoundsException ex) {
             console.printCommandError("Не указаны все аргументы команды");
         } catch (NumberFormatException ex) {

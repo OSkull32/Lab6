@@ -54,7 +54,7 @@ public class FilterLessThanHouse implements Command {
                 numberOfFlatsOnFloor = house.getNumberOfFloors();
                 numberOfLifts = house.getNumberOfLifts();
             } else {
-                throw new WrongArgumentException("Объект аргумента не соответствует типу House (объект типа: " + obj.getClass());
+                throw new WrongArgumentException("Объект аргумента не соответствует типу House");
             }
 
             Collection<Flat> flatCollection = collectionManager.getCollection().values();
