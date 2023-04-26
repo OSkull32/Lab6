@@ -52,7 +52,6 @@ public class UserHandler {
                     while (fileMode() && !userScanner.hasNextLine()) {
                         userScanner.close();
                         userScanner = scannerStack.pop();
-                        UserConsole.printCommandTextNext("Возврат к скрипту '" + scriptStack.pop().getName() + "'...");
                     }
                     if (fileMode()) {
                         userInput = userScanner.nextLine();
@@ -88,7 +87,7 @@ public class UserHandler {
                         return new Request(userCommand[0], userCommand[1], flatReader.read());
                     }
                     case UPDATE_OBJECT -> {
-                        FlatValue flatUpdateValue = generateFlatUpdate();
+                        Flat flatUpdateValue = generateFlatUpdate();
                         return new Request(userCommand[0], userCommand[1], flatUpdateValue);
                     }
                     case UPDATE_OBJECT_HOUSE -> {
@@ -220,7 +219,7 @@ public class UserHandler {
      * @return flat на обновление
      * @throws ErrorInScriptException когда что-то не так в скрипте
      */
-    private FlatValue generateFlatUpdate() throws ErrorInScriptException {
+    private Flat generateFlatUpdate() throws ErrorInScriptException {
         FlatReader flatReader = new FlatReader(userScanner);
         if (fileMode()) flatReader.setFileMode();
         String name = flatReader.askQuestion("Хотите поменять имя квартиры?") ?
@@ -239,7 +238,7 @@ public class UserHandler {
                 flatReader.readView() : null);
         House house = (flatReader.askQuestion("Хотите изменить мебель в квартире?") ?
                 flatReader.readHouse() : null);
-        return new FlatValue(
+        return new Flat(
                 name,
                 coordinates,
                 area,

@@ -91,7 +91,6 @@ public class ExecuteScript implements Command {
             script.run();
 
         } catch (IOException e) {
-            console.printCommandError("ошибка при добавлении файла \"" + args + "\"");
         } catch (RecursiveException e) {
             console.printCommandError("произошла рекурсия: \n\tСкрипт \"" + args + "\" не будет выполнен.");
         }
