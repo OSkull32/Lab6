@@ -91,6 +91,10 @@ public class UserHandler {
                         FlatValue flatUpdateValue = generateFlatUpdate();
                         return new Request(userCommand[0], userCommand[1], flatUpdateValue);
                     }
+                    case UPDATE_OBJECT_HOUSE -> {
+                        House houseFilterValue = generateHouseFilter();
+                        return new Request(userCommand[0], userCommand[1], houseFilterValue);
+                    }
                     case SCRIPT -> {
                         File scriptFile = new File(userCommand[1]);
                         if (!scriptFile.exists()) throw new FileNotFoundException();
@@ -169,18 +173,16 @@ public class UserHandler {
                 }
                 case "remove_greater_key" -> {
                     if (commandArgument.isEmpty()) throw new CommandUsageException("<Key>");
-                    return ProcessingCode.OBJECT;
                 }
                 case "remove_lower_key" -> {
                     if (commandArgument.isEmpty()) throw new CommandUsageException("<Key>");
-                    return ProcessingCode.OBJECT;
                 }
                 case "remove_all_by_view" -> {
                     if (commandArgument.isEmpty()) throw new CommandUsageException("<View>");
-                    return ProcessingCode.OBJECT;
                 }
                 case "filter_less_than_house" -> {
-                    if (commandArgument.isEmpty()) throw new CommandUsageException();
+                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
+                    return ProcessingCode.UPDATE_OBJECT_HOUSE;
                 }
                 case "print_field_ascending_house" -> {
                     if (!commandArgument.isEmpty()) throw new CommandUsageException("<House>");
@@ -264,6 +266,17 @@ public class UserHandler {
                 flatReader.readFurnish(),
                 flatReader.readView(),
                 flatReader.readHouse()
+        );
+    }
+
+    private House generateHouseFilter() {
+        FlatReader flatReader = new FlatReader(userScanner);
+        if (fileMode()) flatReader.setFileMode();
+        return new House(null,
+                flatReader.readHouseYear(),
+                flatReader.readHouseNumberOfFloors(),
+                flatReader.readHouseNumberOfFlatsOnFloor(),
+                flatReader.readHouseNumberOfLifts()
         );
     }
 }
