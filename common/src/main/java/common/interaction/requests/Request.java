@@ -22,6 +22,7 @@ public class Request implements Serializable {
     }
 
     public Request() {
+        this("","");
     }
 
     /**

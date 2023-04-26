@@ -12,7 +12,7 @@ public class App {
     public static final int PORT = 1821;
     public static final int CONNECTION_TIMEOUT = 60000;
     public static final Logger logger = Logger.getLogger(Server.class.getName());
-    public static final String FILE_PATH = "my_resources\\my_collection.json";
+    public static final String FILE_PATH = "my_collection.json";
     public static Hashtable<Integer, Flat> hashtable;
 
     public static void main(String[] args) {

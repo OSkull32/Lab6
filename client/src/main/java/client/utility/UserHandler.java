@@ -111,6 +111,8 @@ public class UserHandler {
             } catch (RecursiveException ex) {
                 UserConsole.printCommandError("Скрипт вызывается рекурсивно");
                 throw new ErrorInScriptException();
+            } catch (Exception ex) {
+                UserConsole.printCommandError("Выполнение скрипта прервано");
             }
         } catch (ErrorInScriptException ex) {
             UserConsole.printCommandError("Выполнение скрипта прервано");
