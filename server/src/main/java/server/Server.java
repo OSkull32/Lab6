@@ -46,13 +46,11 @@ public class Server {
                 } catch (ConnectionErrorException | SocketTimeoutException ex) {
                     break;
                 } catch (IOException ex) {
-                    UserConsole.printCommandError("Ошибка при попытке завершить соединение с клиентом");
                     App.logger.severe("Ошибка при попытке завершить соединение с клиентом");
                 }
             }
             stop();
         } catch (OpeningServerSocketException ex) {
-            UserConsole.printCommandError("Сервер не может быть запущен");
             App.logger.severe("Сервер не может быть запущен");
         }
     }
@@ -65,13 +63,10 @@ public class Server {
             App.logger.info("Завершение работы сервера...");
             if (serverSocket == null) throw new ClosingSocketException();
             serverSocket.close();
-            UserConsole.printCommandTextNext("Работа сервера успешно завершена");
             App.logger.info("Работа сервера успешно завершена");
         } catch (ClosingSocketException ex) {
-            UserConsole.printCommandError("Невозможно завершить работу еще не запущенного сервера");
             App.logger.severe("Невозможно завершить работу еще не запущенного сервера");
         } catch (IOException ex) {
-            UserConsole.printCommandError("Произошла ошибка при завершении работы сервера");
             App.logger.severe("Произошла ошибка при завершении работы сервера");
         }
     }
@@ -88,11 +83,9 @@ public class Server {
             serverSocket.setSoTimeout(soTimeout);
             App.logger.info("Сервер успешно запущен");
         } catch (IllegalArgumentException ex) {
-            UserConsole.printCommandError("Порт '" + port + "' не валидное значение порта");
             App.logger.severe("Порт '" + port + "' не валидное значение порта");
             throw new OpeningServerSocketException();
         } catch (IOException ex) {
-            UserConsole.printCommandError("При попытке использовать порт возникла ошибка " + port);
             App.logger.severe("При попытке использовать порт возникла ошибка " + port);
             throw new OpeningServerSocketException();
         }
@@ -107,18 +100,14 @@ public class Server {
      */
     private Socket connectToClient() throws ConnectionErrorException, SocketTimeoutException {
         try {
-            UserConsole.printCommandTextNext("Попытка соединения с портом '" + port + "'...");
             App.logger.info("Попытка соединения с портом '" + port + "'...");
             Socket clientSocket = serverSocket.accept();
-            UserConsole.printCommandTextNext("Соединение с клиентом успешно установлено");
             App.logger.info("Соединение с клиентом успешно установлено");
             return clientSocket;
         } catch (SocketTimeoutException ex) {
-            UserConsole.printCommandError("Превышено время ожидания подключения");
             App.logger.warning("Превышено время ожидания подключения");
             throw new SocketTimeoutException();
         } catch (IOException ex) {
-            UserConsole.printCommandError("Произошла ошибка при соединении с клиентом!");
             App.logger.severe("Произошла ошибка при соединении с клиентом!");
             throw new ConnectionErrorException();
         }
@@ -144,17 +133,13 @@ public class Server {
             } while (responseToUser.getResponseCode() != ResponseCode.SERVER_EXIT);
             return false;
         } catch (ClassNotFoundException ex) {
-            UserConsole.printCommandError("Ошибка при чтении полученных данных");
             App.logger.severe("Ошибка при чтении полученных данных");
         } catch (InvalidClassException | NotSerializableException ex) {
-            UserConsole.printCommandError("Ошибка при отправке данных на клиент");
             App.logger.severe("Ошибка при отправке данных на клиент");
         } catch (IOException ex) {
             if (userRequest == null) {
-                UserConsole.printCommandError("Разрыв соединения с клиентом");
                 App.logger.warning("Разрыв соединения с клиентом");
             } else {
-                UserConsole.printCommandText("Клиент успешно отключен от сервера");
                 App.logger.info("Клиент успешно отключен от сервера");
             }
         }
@@ -164,28 +149,36 @@ public class Server {
     /**
      * Метод запускает управление сервера через серверную консоль
      */
-    public void manageServer() {
+    public void controlServer(Thread threadToControl) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String command = scanner.nextLine();
+            if (!threadToControl.isAlive()) {
+                break;
+            }
             switch (command) {
-                case "exit" -> {
+                case "save" -> {
                     try {
-                        ServerFileManager.writeToFile(Paths.get(App.FILE_PATH), JsonParser.encode(collectionManager.getCollection()));
+                        ServerFileManager.writeToFile(App.FILE_PATH, JsonParser.encode(collectionManager.getCollection()));
                         System.out.println("Коллекция сохранена");
                     } catch (IOException e) {
                         System.out.println("Ошибка при сохранении коллекции");
                     }
-                    try {
-                        if (!serverSocket.isClosed()) serverSocket.close();
+                }
+                case "exit" -> {
+                    try { //закрытие сокета
+                        if (!serverSocket.isClosed()) {
+                            serverSocket.close();
+                        }
                     } catch (IOException e) {
                         //
                     }
+
                     System.out.println("Выхожу");
                     System.exit(0);
                 }
                 default -> {
-                    System.out.println("Неизвестная команда");
+                    System.out.println("Неизвестная команда: " + command);
                 }
             }
         }

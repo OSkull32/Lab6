@@ -3,13 +3,7 @@ package server.commands;
 import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import server.App;
 import server.utility.CollectionManager;
-import server.utility.JsonParser;
-import server.utility.ServerFileManager;
-
-import java.io.IOException;
-import java.nio.file.Paths;
 
 /**
  * Класс команды, которая добавляет элемент в коллекцию с заданным ключом

@@ -4,6 +4,7 @@ import common.data.Flat;
 import server.commands.CommandManager;
 import server.utility.*;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.logging.Logger;
@@ -12,14 +13,14 @@ public class App {
     public static final int PORT = 1821;
     public static final int CONNECTION_TIMEOUT = 60000;
     public static final Logger logger = Logger.getLogger(Server.class.getName());
-    public static final String FILE_PATH = "my_collection.json";
+    public static final Path FILE_PATH = Paths.get("my_collection.json");
     public static Hashtable<Integer, Flat> hashtable;
 
     public static void main(String[] args) {
 
         try { //получение hashtable
             hashtable = JsonParser.decode(ServerFileManager.readFromFile(
-                    ServerFileManager.addFile(Paths.get(FILE_PATH))));
+                    ServerFileManager.addFile(FILE_PATH)));
         } catch (Exception e) {
             logger.severe("ошибка при чтении из файла");
             System.exit(0);
@@ -34,8 +35,9 @@ public class App {
 
         Server server = new Server(PORT, CONNECTION_TIMEOUT, requestHandler, collectionManager);
 
-        Thread managingServer = new Thread(server::manageServer);
-        managingServer.start();
+        Thread mainThread = Thread.currentThread();
+        Thread controllingServerThread = new Thread(() -> server.controlServer(mainThread));
+        controllingServerThread.start();
 
         server.run();
     }

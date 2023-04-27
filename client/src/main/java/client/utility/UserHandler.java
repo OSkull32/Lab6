@@ -163,9 +163,6 @@ public class UserHandler {
                 case "clear" -> {
                     if (!commandArgument.isEmpty()) throw new CommandUsageException();
                 }
-                case "save" -> {
-                    if (!commandArgument.isEmpty()) throw new CommandUsageException();
-                }
                 case "execute_script" -> {
                     if (commandArgument.isEmpty()) throw new CommandUsageException("<file_name>");
                     return ProcessingCode.SCRIPT;
@@ -251,26 +248,6 @@ public class UserHandler {
                 furnish,
                 view,
                 house
-        );
-    }
-
-    /**
-     * Генерирует Flat на добавление
-     *
-     * @return Flat на добавление
-     */
-    private FlatValue generateFlatAdd() throws ErrorInScriptException {
-        FlatReader flatReader = new FlatReader(userScanner);
-        if (fileMode()) flatReader.setFileMode();
-        return new FlatValue(
-                flatReader.readName(),
-                flatReader.readCoordinates(),
-                flatReader.readArea(),
-                flatReader.readNumberOfRooms(),
-                flatReader.readNumberOfBathrooms(),
-                flatReader.readFurnish(),
-                flatReader.readView(),
-                flatReader.readHouse()
         );
     }
 
