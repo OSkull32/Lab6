@@ -6,7 +6,6 @@ import common.exceptions.OpeningServerSocketException;
 import common.interaction.requests.Request;
 import common.interaction.responses.Response;
 import common.interaction.responses.ResponseCode;
-import common.utility.UserConsole;
 import server.utility.CollectionManager;
 import server.utility.JsonParser;
 import server.utility.RequestHandler;
@@ -16,7 +15,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 /**
@@ -80,7 +78,7 @@ public class Server {
         try {
             App.logger.info("Запуск сервера");
             serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout(soTimeout);
+            //serverSocket.setSoTimeout(soTimeout);
             App.logger.info("Сервер успешно запущен");
         } catch (IllegalArgumentException ex) {
             App.logger.severe("Порт '" + port + "' не валидное значение порта");
@@ -102,6 +100,7 @@ public class Server {
         try {
             App.logger.info("Попытка соединения с портом '" + port + "'...");
             Socket clientSocket = serverSocket.accept();
+            clientSocket.setSoTimeout(soTimeout);
             App.logger.info("Соединение с клиентом успешно установлено");
             return clientSocket;
         } catch (SocketTimeoutException ex) {
