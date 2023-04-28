@@ -5,6 +5,7 @@ import common.data.*;
 import common.exceptions.CommandUsageException;
 import common.exceptions.ErrorInScriptException;
 import common.exceptions.RecursiveException;
+import common.exceptions.WrongArgumentException;
 import common.interaction.FlatValue;
 import common.interaction.requests.Request;
 import common.interaction.responses.ResponseCode;
@@ -150,11 +151,11 @@ public class UserHandler {
                     if (!commandArgument.isEmpty()) throw new CommandUsageException();
                 }
                 case "insert" -> {
-                    if (commandArgument.isEmpty()) throw new CommandUsageException("<Key> {element}");
+                    if (commandArgument.isEmpty() || Integer.parseInt(commandArgument) <= 0) throw new CommandUsageException("<Key'>0'> {element}");
                     return ProcessingCode.OBJECT;
                 }
                 case "update" -> {
-                    if (commandArgument.isEmpty()) throw new CommandUsageException("<Key> {element}");
+                    if (commandArgument.isEmpty() || Integer.parseInt(commandArgument) <= 0) throw new CommandUsageException("<Key'>0'> {element}");
                     return ProcessingCode.UPDATE_OBJECT;
                 }
                 case "remove_key" -> {
