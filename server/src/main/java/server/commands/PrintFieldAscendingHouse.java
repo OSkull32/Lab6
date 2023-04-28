@@ -1,13 +1,9 @@
 package server.commands;
 
-import common.data.Flat;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
 import server.utility.CollectionManager;
 import server.utility.SortByHouse;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Класс команды "print_field_ascending_house".
@@ -38,12 +34,10 @@ public class PrintFieldAscendingHouse implements Command {
     @Override
     public void execute(String args) throws WrongArgumentException {
         if (!args.isEmpty()) throw new WrongArgumentException();
-        Collection<Flat> flatCollection = collectionManager.getCollection().values();
-        ArrayList<Flat> flatList = new ArrayList<>(flatCollection);
-        flatList.sort(new SortByHouse());
-        for (Flat flat : flatList) {
-            console.printCommandTextNext("Квартира: " + flat.getName() + " в доме " + flat.getHouse());
-        }
+        collectionManager.getCollection().values().stream()
+                .sorted(new SortByHouse())
+                .forEach(flat -> console.printCommandTextNext("Квартира: " + flat.getName() +
+                        " в доме " + flat.getHouse().getName()));
     }
 
     /**

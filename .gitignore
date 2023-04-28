@@ -1,5 +1,7 @@
 .gitignore
+/test-files/
 /my_resources/
+my_collection.json
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

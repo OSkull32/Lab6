@@ -1,12 +1,10 @@
 package server.commands;
 
-import common.data.Flat;
 import common.data.House;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
 import server.utility.CollectionManager;
-
-import java.util.Collection;
+import server.utility.SortByCoordinates;
 
 /**
  * Класс команды "filter_less_than_house".
@@ -43,9 +41,9 @@ public class FilterLessThanHouse implements Command {
         if (!args.isEmpty()) throw new WrongArgumentException();
         try {
             int year;
-            Long numberOfFloors;
+            long numberOfFloors;
             long numberOfFlatsOnFloor;
-            Long numberOfLifts;
+            long numberOfLifts;
 
             Object obj = commandManager.getCommandObjectArgument();
             if (obj instanceof House house) { //pattern variable
@@ -56,20 +54,15 @@ public class FilterLessThanHouse implements Command {
             } else {
                 throw new WrongArgumentException("Объект аргумента не соответствует типу House");
             }
-
-            Collection<Flat> flatCollection = collectionManager.getCollection().values();
-            int countHouse = 0;
-            for (Flat flat : flatCollection) {
-                if (flat.getHouse() == null) continue;
-                if (flat.getHouse().getYear() < year
-                        && flat.getHouse().getNumberOfFloors() < numberOfFloors
-                        && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
-                        && flat.getHouse().getNumberOfLifts() < numberOfLifts) {
-                    countHouse++;
-                    console.printCommandTextNext(flat.getName() + "; ");
-                }
-            }
-            if (countHouse == 0) console.printCommandTextNext("Таких домов нет.");
+            collectionManager.getCollection().values().stream()
+                    .filter(flat -> flat.getHouse() != null
+                            && flat.getHouse().getYear() < year
+                            && flat.getHouse().getNumberOfFloors() < numberOfFloors
+                            && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
+                            && flat.getHouse().getNumberOfLifts() < numberOfLifts
+                    )
+                    .sorted(new SortByCoordinates())
+                    .forEach(flat -> console.printCommandTextNext("Квартира: " + flat.getName() + "; "));
 
         } catch (NumberFormatException e) {
             throw new WrongArgumentException("Аргумент должен быть числом.");

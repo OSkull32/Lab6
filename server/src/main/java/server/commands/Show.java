@@ -35,9 +35,7 @@ public class Show implements Command {
         if (hashtable.size() == 0) {
             console.printCommandTextNext("Коллекция пуста.");
         } else {
-            for (int key : hashtable.keySet()) {
-                console.printCommandTextNext("\nЭлемент: " + key + "\n" + hashtable.get(key).toString());
-            }
+            hashtable.forEach((key, flat) -> console.printCommandTextNext("\nЭлемент: " + key + "\n" + flat.toString()));
         }
     }
 

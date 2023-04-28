@@ -10,7 +10,7 @@ import server.utility.CollectionManager;
  */
 public class RemoveAllByView implements Command {
     private final CollectionManager collectionManager;
-    private final Console CONSOLE;
+    private final Console console;
 
     /**
      * Конструктор класса.
@@ -19,7 +19,7 @@ public class RemoveAllByView implements Command {
      */
     public RemoveAllByView(CollectionManager collectionManager, Console console) {
         this.collectionManager = collectionManager;
-        this.CONSOLE = console;
+        this.console = console;
     }
 
     /**
@@ -31,17 +31,15 @@ public class RemoveAllByView implements Command {
     public void execute(String args) throws WrongArgumentException {
         if (args.isEmpty()) throw new WrongArgumentException();
         try {
-            if (args.equals("null")) {
-                collectionManager.removeAllByView(null);
-            } else collectionManager.removeAllByView(View.valueOf(args));
+            collectionManager.removeAllByView((args.equals("null") ? null : View.valueOf(args)));
         } catch (IllegalArgumentException ex) {
-            CONSOLE.printCommandError("Выбранной константы нет в перечислении.");
-            CONSOLE.printCommandTextNext("Список всех констант:");
+            console.printCommandError("Выбранной константы нет в перечислении.");
+            console.printCommandTextNext("Список всех констант:");
             for (View view : View.values()) {
-                CONSOLE.printCommandTextNext(view.toString());
+                console.printCommandTextNext(view.toString());
             }
         } catch (ArrayIndexOutOfBoundsException ex) {
-            CONSOLE.printCommandError("Не указаны аргументы команды.");
+            console.printCommandError("Не указаны аргументы команды.");
         }
     }
 

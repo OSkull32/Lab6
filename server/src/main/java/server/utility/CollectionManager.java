@@ -8,10 +8,9 @@ import common.utility.FlatReader;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Класс отвечающий за работу с коллекциями
@@ -25,9 +24,6 @@ public class CollectionManager {
     private final Console console;
     // Время инициализации коллекции
     private final LocalDateTime collectionInitialization;
-
-    private LocalDateTime lastInitTime;
-    private LocalDateTime lastSaveTime;
 
     /**
      * Максимальный ID у объектов коллекции
@@ -43,9 +39,6 @@ public class CollectionManager {
         else this.hashtable = new Hashtable<>();
 
         this.console = console;
-
-        this.lastInitTime = null;
-        this.lastSaveTime = null;
 
         for (Flat flat : this.hashtable.values()) {
             allId.add(flat.getId());
@@ -95,12 +88,11 @@ public class CollectionManager {
      * @return ключ
      */
     public int getKey(int id) {
-        for (int key : hashtable.keySet()) {
-            if (hashtable.get(key).getId() == id) {
-                return key;
-            }
-        }
-        return -1;
+        return hashtable.entrySet().stream()
+                .filter(entry -> entry.getValue().getId() == id)
+                .findAny()
+                .map(entry -> entry.getKey())
+                .orElse(-1);
     }
 
     /*

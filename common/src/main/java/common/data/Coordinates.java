@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Класс, содержащий координаты элемента коллекции
  */
-public class Coordinates implements Serializable {
+public class Coordinates implements Serializable, Comparable<Coordinates> {
     /**
      * Поле координаты x. Максимальное значение поля: 713
      */
@@ -72,5 +72,10 @@ public class Coordinates implements Serializable {
     @Override
     public String toString() {
         return "(x,y) = (" + x + "," + y + ")";
+    }
+
+    @Override
+    public int compareTo(Coordinates o) {
+        return x * x + y * y - o.x * o.x - o.y * o.y; //сравнивает по удаленности от (0,0)
     }
 }

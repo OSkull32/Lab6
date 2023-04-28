@@ -3,7 +3,6 @@ package server.commands;
 import common.exceptions.InvalidCommandException;
 import common.exceptions.WrongArgumentException;
 import common.utility.Console;
-import common.utility.FlatReader;
 import server.utility.CollectionManager;
 
 import java.util.ArrayList;
