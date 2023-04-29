@@ -152,7 +152,10 @@ public class CollectionManager {
     public void removeAllByView(View view) {
         ArrayList<Integer> keys = new ArrayList<>();
         long count = hashtable.entrySet().stream()
-                .filter(entry -> entry.getValue().getView().equals(view))
+                .filter(entry -> {
+                    if (entry.getValue().getView() == null && view == null) return true;
+                    return entry.getValue().getView().equals(view);
+                })
                 .peek(entry -> keys.add(entry.getKey()))
                 .count();
         keys.forEach(hashtable::remove);
