@@ -202,6 +202,8 @@ public class UserHandler {
             if (exception.getMessage() != null) command += " " + exception.getMessage();
             UserConsole.printCommandTextNext("Использование: '" + command + "'");
             return ProcessingCode.ERROR;
+        } catch (NumberFormatException ex) {
+            UserConsole.printCommandError("Формат аргумента не соответствует целочисленному");
         }
         return ProcessingCode.OK;
     }
