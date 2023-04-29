@@ -95,91 +95,6 @@ public class CollectionManager {
                 .orElse(-1);
     }
 
-    /*
-     * Метод, изменяющий поле выбранного элемента коллекции
-     *
-     * @param key   идентификатор
-     * @param field имя поля
-     *
-
-    public void update(int key, String field) throws InvalidValueException {
-
-        switch (field) {
-            case "name": {
-                hashtable.get(key).setName(flatReader.readName());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "coordinate_x": {
-                hashtable.get(key).setCoordinateX(flatReader.readCoordinatesX());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "coordinate_y": {
-                hashtable.get(key).setCoordinateY(flatReader.readCoordinatesY());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "area": {
-                hashtable.get(key).setArea(flatReader.readArea());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "number_of_rooms": {
-                hashtable.get(key).setNumberOfRooms(flatReader.readNumberOfRooms());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "number_of_bathrooms": {
-                hashtable.get(key).setNumberOfBathrooms(flatReader.readNumberOfBathrooms());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "furnish": {
-                hashtable.get(key).setFurnish(flatReader.readFurnish());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "view": {
-                hashtable.get(key).setView(flatReader.readView());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "house_name": {
-                hashtable.get(key).setHouseName(flatReader.readHouseName());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "house_year": {
-                hashtable.get(key).setHouseYear(flatReader.readHouseYear());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "house_number_of_floors": {
-                hashtable.get(key).setHouseNumberOfFloors(flatReader.readHouseNumberOfFloors());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "house_number_of_flats_on_floor": {
-                hashtable.get(key).setHouseNumberOfFlatsOnFloor(flatReader.readHouseNumberOfFlatsOnFloor());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "house_number_of_lifts": {
-                hashtable.get(key).setHouseNumberOfLifts(flatReader.readHouseNumberOfLifts());
-                console.printCommandTextNext("Значение поля было изменено");
-                break;
-            }
-            case "stop": {
-                break;
-            }
-            default: {
-                throw new InvalidValueException();
-            }
-        }
-    }
-    */
-
     /**
      * Метод, удаляющий выбранный по идентификатору элемент коллекции
      *
@@ -197,12 +112,13 @@ public class CollectionManager {
      */
     public void removeLowerKey(Integer key) {
         ArrayList<Integer> keys = new ArrayList<>();
-        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
-            if (entry.getKey() < key) keys.add(entry.getKey());
-        }
-        for (Integer k : keys) {
-            removeKey(k);
-        }
+        long count = hashtable.entrySet().stream()
+                .filter(entry -> entry.getKey() < key)
+                .peek(entry -> keys.add(entry.getKey()))
+                .count();
+        keys.forEach(hashtable::remove);
+        console.printCommandTextNext("Было удалено элементов: " + count);
+
     }
 
     /**
@@ -212,12 +128,12 @@ public class CollectionManager {
      */
     public void removeGreaterKey(Integer key) {
         ArrayList<Integer> keys = new ArrayList<>();
-        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
-            if (entry.getKey() > key) keys.add(entry.getKey());
-        }
-        for (Integer k : keys) {
-            removeKey(k);
-        }
+        long count = hashtable.entrySet().stream()
+                .filter(entry -> entry.getKey() > key)
+                .peek(entry -> keys.add(entry.getKey()))
+                .count();
+        keys.forEach(hashtable::remove);
+        console.printCommandTextNext("Было удалено элементов: " + count);
     }
 
     /**
@@ -234,17 +150,13 @@ public class CollectionManager {
      * @param view выбранный вид элемента коллекции
      */
     public void removeAllByView(View view) {
-        int size = hashtable.size();
         ArrayList<Integer> keys = new ArrayList<>();
-        for (Map.Entry<Integer, Flat> entry : hashtable.entrySet()) {
-            if (entry.getValue().getView() == null) keys.add(entry.getKey());
-            else if (entry.getValue().getView().equals(view)) keys.add((entry.getKey()));
-        }
-        for (Integer key : keys) {
-            hashtable.remove(key);
-        }
-        if (size == hashtable.size()) console.printCommandTextNext("Не было найдено элементов с таким значением поля");
-        else console.printCommandTextNext("Элементы с данным значением поля удалены");
+        long count = hashtable.entrySet().stream()
+                .filter(entry -> entry.getValue().getView().equals(view))
+                .peek(entry -> keys.add(entry.getKey()))
+                .count();
+        keys.forEach(hashtable::remove);
+        console.printCommandTextNext("Было удалено элементов: " + count);
     }
 
     /**
