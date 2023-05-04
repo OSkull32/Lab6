@@ -50,6 +50,7 @@ public class UserHandler {
                     while (fileMode() && !userScanner.hasNextLine()) {
                         userScanner.close();
                         userScanner = scannerStack.pop();
+                        scriptStack.pop();
                     }
                     if (fileMode()) {
                         userInput = userScanner.nextLine();
@@ -82,13 +83,10 @@ public class UserHandler {
                 FlatReader flatReader = new FlatReader(userScanner);
                 switch (processingCode) {
                     case OBJECT -> {
-                        //FlatValue flatAddValue = generateFlatAdd();
-                        int x = Integer.parseInt(userCommand[1]);
                         return new Request(userCommand[0], userCommand[1], flatReader.read());
                     }
                     case UPDATE_OBJECT -> {
                         Flat flatUpdateValue = generateFlatUpdate();
-                        int x = Integer.parseInt(userCommand[1]);
                         return new Request(userCommand[0], userCommand[1], flatUpdateValue);
                     }
                     case UPDATE_OBJECT_HOUSE -> {

@@ -41,15 +41,19 @@ public class FilterLessThanHouse implements Command {
         if (!args.isEmpty()) throw new WrongArgumentException();
         try {
             int year;
-            long numberOfFloors;
+            Long numberOfFloors;
             long numberOfFlatsOnFloor;
-            long numberOfLifts;
+            Long numberOfLifts;
 
             Object obj = commandManager.getCommandObjectArgument();
+            if (obj == null) {
+                console.printCommandTextNext("Передан дом == NULL");
+                return;
+            }
             if (obj instanceof House house) { //pattern variable
                 year = house.getYear();
                 numberOfFloors = house.getNumberOfFloors();
-                numberOfFlatsOnFloor = house.getNumberOfFloors();
+                numberOfFlatsOnFloor = house.getNumberOfFlatsOnFloor();
                 numberOfLifts = house.getNumberOfLifts();
             } else {
                 throw new WrongArgumentException("Объект аргумента не соответствует типу House");
@@ -57,9 +61,9 @@ public class FilterLessThanHouse implements Command {
             collectionManager.getCollection().values().stream()
                     .filter(flat -> flat.getHouse() != null
                             && flat.getHouse().getYear() < year
-                            && flat.getHouse().getNumberOfFloors() < numberOfFloors
+                            && flat.getHouse().getNumberOfFloors() != null && numberOfFloors != null && flat.getHouse().getNumberOfFloors() < numberOfFloors
                             && flat.getHouse().getNumberOfFlatsOnFloor() < numberOfFlatsOnFloor
-                            && flat.getHouse().getNumberOfLifts() < numberOfLifts
+                            && flat.getHouse().getNumberOfLifts() != null && numberOfLifts != null && flat.getHouse().getNumberOfLifts() < numberOfLifts
                     )
                     .sorted(new SortByCoordinates())
                     .forEach(flat -> console.printCommandTextNext("Квартира: " + flat.getName() + "; "));

@@ -36,8 +36,10 @@ public class PrintFieldAscendingHouse implements Command {
         if (!args.isEmpty()) throw new WrongArgumentException();
         collectionManager.getCollection().values().stream()
                 .sorted(new SortByHouse())
-                .forEach(flat -> console.printCommandTextNext("Квартира: " + flat.getName() +
-                        " в доме " + flat.getHouse().getName()));
+                .forEach(flat -> {
+                    String houseName = flat.getHouse() == null ? "null" : flat.getHouse().getName();
+                    console.printCommandTextNext("Квартира: " + flat.getName() + " в доме " + houseName);
+                });
     }
 
     /**

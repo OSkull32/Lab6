@@ -3,6 +3,7 @@
 /my_resources/
 my_collection.json
 .gradle
+/.idea/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
