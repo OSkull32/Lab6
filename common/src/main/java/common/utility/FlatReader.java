@@ -63,10 +63,6 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
         fileMode = true;
     }
 
-    public void setUserMode() {
-        fileMode = false;
-    }
-
     /**
      * Метод, выполняющий чтение данных из консоли. Ввод полей в определенном порядке
      *
