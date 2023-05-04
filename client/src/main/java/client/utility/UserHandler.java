@@ -5,8 +5,6 @@ import common.data.*;
 import common.exceptions.CommandUsageException;
 import common.exceptions.ErrorInScriptException;
 import common.exceptions.RecursiveException;
-import common.exceptions.WrongArgumentException;
-import common.interaction.FlatValue;
 import common.interaction.requests.Request;
 import common.interaction.responses.ResponseCode;
 import common.utility.FlatReader;
@@ -23,11 +21,10 @@ import java.util.Stack;
  * Получает запросы пользователей
  */
 public class UserHandler {
-    private final int maxRewriteAttempts = 1;
 
     private Scanner userScanner;
-    private Stack<File> scriptStack = new Stack<>();
-    private Stack<Scanner> scannerStack = new Stack<>();
+    private final Stack<File> scriptStack = new Stack<>();
+    private final Stack<Scanner> scannerStack = new Stack<>();
 
     public UserHandler(Scanner userConsole) {
         this.userScanner = userConsole;
@@ -71,6 +68,7 @@ public class UserHandler {
                     UserConsole.printCommandError("Произошла ошибка при вводе команды.");
                     userCommand = new String[]{"", ""};
                     rewriteAttempts++;
+                    int maxRewriteAttempts = 1;
                     if (rewriteAttempts >= maxRewriteAttempts) {
                         UserConsole.printCommandError("Превышено количество попыток ввода.");
                         System.exit(0);
@@ -113,8 +111,7 @@ public class UserHandler {
             } catch (RecursiveException ex) {
                 UserConsole.printCommandError("Скрипт вызывается рекурсивно");
                 throw new ErrorInScriptException();
-            } catch (NumberFormatException ex) {
-
+            } catch (NumberFormatException ignored) {
             } catch (Exception ex) {
                 UserConsole.printCommandError("Выполнение команды прервано");
             }
