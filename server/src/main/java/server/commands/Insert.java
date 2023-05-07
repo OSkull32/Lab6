@@ -49,7 +49,6 @@ public class Insert implements Command {
         } catch (IndexOutOfBoundsException ex) {
             console.printCommandError("Не указаны аргументы команды.");
         } catch (NumberFormatException ex) {
-            console.printCommandError("Формат аргумента не соответствует целочисленному " + ex.getMessage());
         }
     }
 

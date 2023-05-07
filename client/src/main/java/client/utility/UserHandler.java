@@ -5,7 +5,6 @@ import common.data.*;
 import common.exceptions.CommandUsageException;
 import common.exceptions.ErrorInScriptException;
 import common.exceptions.RecursiveException;
-import common.exceptions.WrongArgumentException;
 import common.interaction.FlatValue;
 import common.interaction.requests.Request;
 import common.interaction.responses.ResponseCode;
@@ -23,11 +22,10 @@ import java.util.Stack;
  * Получает запросы пользователей
  */
 public class UserHandler {
-    private final int maxRewriteAttempts = 1;
 
     private Scanner userScanner;
-    private Stack<File> scriptStack = new Stack<>();
-    private Stack<Scanner> scannerStack = new Stack<>();
+    private final Stack<File> scriptStack = new Stack<>();
+    private final Stack<Scanner> scannerStack = new Stack<>();
 
     public UserHandler(Scanner userConsole) {
         this.userScanner = userConsole;
@@ -72,6 +70,7 @@ public class UserHandler {
                     UserConsole.printCommandError("Произошла ошибка при вводе команды.");
                     userCommand = new String[]{"", ""};
                     rewriteAttempts++;
+                    int maxRewriteAttempts = 1;
                     if (rewriteAttempts >= maxRewriteAttempts) {
                         UserConsole.printCommandError("Превышено количество попыток ввода.");
                         System.exit(0);
@@ -82,10 +81,10 @@ public class UserHandler {
             try {
                 if (fileMode() && (serverResponseCode == ResponseCode.ERROR || processingCode == ProcessingCode.ERROR))
                     throw new ErrorInScriptException();
-                FlatReader flatReader = new FlatReader(userScanner);
                 switch (processingCode) {
                     case OBJECT -> {
-                        return new Request(userCommand[0], userCommand[1], flatReader.read());
+                        Flat flatAddValue = generateFlatAdd();
+                        return new Request(userCommand[0], userCommand[1], flatAddValue);
                     }
                     case UPDATE_OBJECT -> {
                         Flat flatUpdateValue = generateFlatUpdate();
@@ -111,8 +110,7 @@ public class UserHandler {
             } catch (RecursiveException ex) {
                 UserConsole.printCommandError("Скрипт вызывается рекурсивно");
                 throw new ErrorInScriptException();
-            } catch (NumberFormatException ex) {
-
+            } catch (NumberFormatException ignored) {
             } catch (Exception ex) {
                 UserConsole.printCommandError("Выполнение команды прервано");
             }
@@ -200,6 +198,8 @@ public class UserHandler {
             if (exception.getMessage() != null) command += " " + exception.getMessage();
             UserConsole.printCommandTextNext("Использование: '" + command + "'");
             return ProcessingCode.ERROR;
+        } catch (NumberFormatException ex) {
+            UserConsole.printCommandError("Формат аргумента не соответствует целочисленному");
         }
         return ProcessingCode.OK;
     }
@@ -247,6 +247,21 @@ public class UserHandler {
                 furnish,
                 view,
                 house
+        );
+    }
+
+    private Flat generateFlatAdd() throws ErrorInScriptException {
+        FlatReader flatReader = new FlatReader(userScanner);
+        if (fileMode()) flatReader.setFileMode();
+        return new Flat(
+                flatReader.readHouseName(),
+                flatReader.readCoordinates(),
+                flatReader.readArea(),
+                flatReader.readNumberOfRooms(),
+                flatReader.readNumberOfBathrooms(),
+                flatReader.readFurnish(),
+                flatReader.readView(),
+                flatReader.readHouse()
         );
     }
 
