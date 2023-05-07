@@ -5,6 +5,7 @@ import common.data.*;
 import common.exceptions.CommandUsageException;
 import common.exceptions.ErrorInScriptException;
 import common.exceptions.RecursiveException;
+import common.interaction.FlatValue;
 import common.interaction.requests.Request;
 import common.interaction.responses.ResponseCode;
 import common.utility.FlatReader;
@@ -80,10 +81,10 @@ public class UserHandler {
             try {
                 if (fileMode() && (serverResponseCode == ResponseCode.ERROR || processingCode == ProcessingCode.ERROR))
                     throw new ErrorInScriptException();
-                FlatReader flatReader = new FlatReader(userScanner);
                 switch (processingCode) {
                     case OBJECT -> {
-                        return new Request(userCommand[0], userCommand[1], flatReader.read());
+                        Flat flatAddValue = generateFlatAdd();
+                        return new Request(userCommand[0], userCommand[1], flatAddValue);
                     }
                     case UPDATE_OBJECT -> {
                         Flat flatUpdateValue = generateFlatUpdate();
@@ -246,6 +247,21 @@ public class UserHandler {
                 furnish,
                 view,
                 house
+        );
+    }
+
+    private Flat generateFlatAdd() throws ErrorInScriptException {
+        FlatReader flatReader = new FlatReader(userScanner);
+        if (fileMode()) flatReader.setFileMode();
+        return new Flat(
+                flatReader.readHouseName(),
+                flatReader.readCoordinates(),
+                flatReader.readArea(),
+                flatReader.readNumberOfRooms(),
+                flatReader.readNumberOfBathrooms(),
+                flatReader.readFurnish(),
+                flatReader.readView(),
+                flatReader.readHouse()
         );
     }
 
