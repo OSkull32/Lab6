@@ -86,8 +86,7 @@ public class CommandManager {
         this.commandObjectArgument = commandObjectArgument;
         try {
             executeCommand(new String[]{command, args});
-        } catch (InvalidCommandException | WrongArgumentException e) {
-            console.printCommandError(e.getMessage());
+        } catch (InvalidCommandException | WrongArgumentException ignored) {
         }
     }
 
