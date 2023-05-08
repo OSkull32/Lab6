@@ -154,6 +154,7 @@ public class CollectionManager {
         long count = hashtable.entrySet().stream()
                 .filter(entry -> {
                     if (entry.getValue().getView() == null && view == null) return true;
+                    if (entry.getValue().getView() == null) return false;
                     return entry.getValue().getView().equals(view);
                 })
                 .peek(entry -> keys.add(entry.getKey()))
