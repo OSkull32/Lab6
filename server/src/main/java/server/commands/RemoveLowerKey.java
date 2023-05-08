@@ -29,7 +29,6 @@ public class RemoveLowerKey implements Command {
         if (args.isEmpty()) throw new WrongArgumentException();
         try {
             collectionManager.removeLowerKey(Integer.parseInt(args));
-            console.printCommandTextNext("Элементы коллекции были удалены.");
         } catch (IndexOutOfBoundsException ex) {
             console.printCommandError("Не указан аргумент команды");
         } catch (NumberFormatException ex) {

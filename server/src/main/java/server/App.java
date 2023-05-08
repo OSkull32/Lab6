@@ -21,8 +21,12 @@ public class App {
     public static void main(String[] args) {
 
         //добавление файла
-        FILE_PATH = setFilePath(args[0]);
-        if (FILE_PATH == null) System.exit(0);
+        try {
+            FILE_PATH = Paths.get(args[0]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            logger.severe("При запуске программы в аргументах командной строки не был указан путь к файлу");
+            System.exit(0);
+        }
 
         //получение hashtable
         try {
@@ -53,15 +57,6 @@ public class App {
         controllingServerThread.start();
 
         server.run();
-    }
-
-    private static Path setFilePath (String path) {
-        try {
-            return Paths.get(path);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            logger.severe("При запуске программы в аргументах командной строки не был указан путь к файлу");
-            return null;
-        }
     }
 
     private static Hashtable<Integer, Flat> getHashtableFromFile() throws Exception {
