@@ -40,10 +40,10 @@ public class FlatReader implements FlatReaderInterface, CoordinatesReaderInterfa
 
         while (true) {
             try {
-                UserConsole.printCommandTextNext(finalQuestion);
-                UserConsole.printCommandText("> ");
+                if (!fileMode) UserConsole.printCommandTextNext(finalQuestion);
+                if (!fileMode) UserConsole.printCommandText("> ");
                 answer = userScanner.nextLine().trim();
-                if (fileMode) UserConsole.printCommandTextNext(answer);
+                if (!fileMode) UserConsole.printCommandTextNext(answer);
                 if (!answer.equals("yes") && !answer.equals("no")) throw new InvalidValueException();
                 break;
                 } catch (NoSuchElementException ex) {
