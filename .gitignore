@@ -1,4 +1,5 @@
 .gitignore
+*.py
 /test-files/
 /my_resources/
 my_collection.json
