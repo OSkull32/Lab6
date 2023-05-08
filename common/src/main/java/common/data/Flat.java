@@ -83,6 +83,7 @@ public class Flat implements Comparable<Flat>, Serializable {
         this.furnish = furnish;
         this.view = view;
         this.house = house;
+        this.creationDate = LocalDateTime.now();
     }
 
     /**

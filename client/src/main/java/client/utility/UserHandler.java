@@ -254,7 +254,7 @@ public class UserHandler {
         FlatReader flatReader = new FlatReader(userScanner);
         if (fileMode()) flatReader.setFileMode();
         return new Flat(
-                flatReader.readHouseName(),
+                flatReader.readName(),
                 flatReader.readCoordinates(),
                 flatReader.readArea(),
                 flatReader.readNumberOfRooms(),
