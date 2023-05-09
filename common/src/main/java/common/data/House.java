@@ -157,6 +157,8 @@ public class House implements Comparable<House>, Serializable {
      */
     @Override
     public int compareTo(House o) {
+        if (this.getNumberOfFloors() == null) return -1;
+        if (o.getNumberOfFloors() == null) return 1;
         if ((long) this.numberOfFloors == o.getNumberOfFloors()){
             return Long.compare(this.numberOfFlatsOnFloor, o.getNumberOfFlatsOnFloor());
         }
